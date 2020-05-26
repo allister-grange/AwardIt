@@ -7,63 +7,54 @@ import FilledInput from '@material-ui/core/FilledInput';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Box from '@material-ui/core/Box';
+
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Search from '@material-ui/icons/Search'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignContent: 'center'
   },
   margin: {
     margin: theme.spacing(1),
-  },
-  withoutLabel: {
-    marginTop: theme.spacing(3),
   },
   textField: {
     width: '25ch',
   },
 }));
 
-export default function InputAdornments() {
+export default function SearchBar(props: any) {
   const classes = useStyles();
-  const [values, setValues] = React.useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
-  });
-
-  const handleChange = (prop: any) => (event: any) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
 
 
   return (
     <div className={classes.root}>
-      <div>
-        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment">post url</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment"
-            value={values.password}
-            onChange={handleChange('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                  <Search />
-              </InputAdornment>
-            }
-            labelWidth={55}
-          />
-        </FormControl>
-    
-      </div>
-    </div>
+            <FormControl style={{width:'calc(100% - 150px)'}} className={clsx(classes.margin, classes.textField)} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment">post url</InputLabel>
+            <OutlinedInput
+                fullWidth={true}
+                id="outlined-adornment"
+                value={props.value}
+                onChange={props.handleChange()}
+                endAdornment={
+                <InputAdornment position="end">
+                    <IconButton aria-label="search" onClick={props.onSearchClick}>
+                        {props.isSearching ? <CircularProgress size={28}/> :  <Search />}
+                    </IconButton>
+                </InputAdornment>
+                }
+                labelWidth={55}
+            />
+            </FormControl>
+        </div>
   );
 }
