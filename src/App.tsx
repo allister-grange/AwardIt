@@ -6,7 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import SearchBar from './components/SearchBar';
+import Copyright from './components/Copyright';
 import clsx from "clsx";
+
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,23 +34,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Copyright() {
-
-  const classes = useStyles();
-
-  return (
-      <Typography className='footer' variant="body2" color="textSecondary" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="https://material-ui.com/">
-          Allister Grange
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-  );
-}
 
 export default function App() {
+
+// https://www.fullstackoasis.com/articles/2019/08/19/how-to-call-the-reddit-rest-api-using-node-js-part-i/
+
+  const endPoint = "https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount";
+  const secret = "WHYkZl9qvedilsa1FiekC2bp8RY"
+
   const classes = useStyles();
 
   const [hasSearched, setHasSearched] = useState(false);
@@ -58,12 +52,46 @@ export default function App() {
     setUrl(event.target.value);
   };
 
+  const getAccessToken = () => {
+
+
+
+    const httpOptions = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa('T6Wd6ejCgIp1Pw' + ':' + 'SByH77LyvnGGERLZeJioCtkVF0s'),
+      },
+    };
+  
+    const grantType = 'authorization_code';
+    const code = 'yiU8hr9631O6KWkUZ7amlC2TxAI';
+    const redirectUri = 'http://localhost:8080';
+    const postdata = `grant_type=${grantType}&code=${code}&redirect_uri=${redirectUri}`;
+  
+    return axios.post('https://www.reddit.com/api/v1/access_token', postdata, httpOptions);
+  }
+  
+
   //will be used for css transition
   const onSearchClick = () => {
     console.log(isSearching)
     setHasSearched(!hasSearched);
     setIsSearching(!isSearching);
+
+    let result = getAccessToken().then((result) =>{
+      console.log(result)
+    })
   }
+
+  useEffect(() => {
+    // axios.get(endPoint)
+    //   .then(res => {
+    //     const persons = res.data;
+    //     console.log(persons)
+    //   })
+  
+   
+  });
 
   return (
     <Container  maxWidth="xl">
