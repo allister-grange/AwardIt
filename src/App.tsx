@@ -11,6 +11,24 @@ import clsx from "clsx";
 
 import axios from 'axios';
 
+require('dotenv').config()
+
+class CoinData {
+  totalCost?: number;
+  // todo change this into another object from an any
+  coins?: Array<any>;
+
+  constructor(results: any) {
+//  TODO get rid of this nasty jank
+    if(results){
+      console.log(results.data.total_cost)
+
+      
+      this.totalCost = results.data.total_cost;
+    }
+}
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -39,59 +57,51 @@ export default function App() {
 
 // https://www.fullstackoasis.com/articles/2019/08/19/how-to-call-the-reddit-rest-api-using-node-js-part-i/
 
-  const endPoint = "https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount";
-  const secret = "WHYkZl9qvedilsa1FiekC2bp8RY"
+//https://www.reddit.com/api/v1/authorize?client_id=T6Wd6ejCgIp1Pw&response_type=code&state=poo&redirect_uri=http://localhost:8080&duration=permanent&scope=identity
+
+  const endPoint = process.env.LAMBDA_ENDPOINT;
+  const secret = process.env.REDDIT_SECRET;
 
   const classes = useStyles();
 
   const [hasSearched, setHasSearched] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [data, setData] = useState(new CoinData(null));
   const [url, setUrl] = React.useState('');
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
   };
 
-  const getAccessToken = () => {
+  const getDataFromAPI = () => {
 
+    // const httpOptions = {
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': 'Bearer ',
+    //   },
+    // };
 
-
-    const httpOptions = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa('T6Wd6ejCgIp1Pw' + ':' + 'SByH77LyvnGGERLZeJioCtkVF0s'),
-      },
-    };
-  
-    const grantType = 'authorization_code';
-    const code = 'yiU8hr9631O6KWkUZ7amlC2TxAI';
-    const redirectUri = 'http://localhost:8080';
-    const postdata = `grant_type=${grantType}&code=${code}&redirect_uri=${redirectUri}`;
-  
-    return axios.post('https://www.reddit.com/api/v1/access_token', postdata, httpOptions);
+    return axios.get('https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount?url=gs563k' + url);
   }
   
 
   //will be used for css transition
   const onSearchClick = () => {
-    console.log(isSearching)
+    setIsSearching(true);
     setHasSearched(!hasSearched);
-    setIsSearching(!isSearching);
 
-    let result = getAccessToken().then((result) =>{
-      console.log(result)
+    let result = getDataFromAPI().then((result) =>{
+
+      setData(new CoinData(result))
+
+    }).catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      setIsSearching(false);
     })
   }
-
-  useEffect(() => {
-    // axios.get(endPoint)
-    //   .then(res => {
-    //     const persons = res.data;
-    //     console.log(persons)
-    //   })
-  
-   
-  });
 
   return (
     <Container  maxWidth="xl">
@@ -101,11 +111,15 @@ export default function App() {
         </Typography>
         <div className={classes.searchBar}>
           <SearchBar 
-            value={url} 
+            value={'gs563k'} 
+        //  value={url}
             onSearchClick={onSearchClick} 
             handleChange={handleChange}
             isSearching={isSearching}/>
         </div>
+        <Typography align="center" variant="h4" component="h1" gutterBottom>
+          {'total cost of coins is ' + data.totalCost}
+        </Typography>
         <div className={classes.footer}>
           <Copyright />
         </div>
