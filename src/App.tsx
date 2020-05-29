@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
 import SearchBar from './components/SearchBar';
 import Copyright from './components/Copyright';
@@ -62,7 +63,13 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       textAlign: 'center',
       color: theme.palette.text.secondary,
+      height: '80px',
+      display: 'flex',
+    alignItems: 'center'
     },
+    awardCardText: {
+      paddingLeft: '15px'
+    }
   }));
 
 
@@ -101,7 +108,7 @@ export default function App() {
     //   },
     // };
 
-    return axios.get(lambdaEndPoint + '62sjuh');
+    return axios.get(lambdaEndPoint + 'ewt93j');
   }
 
 
@@ -135,7 +142,7 @@ export default function App() {
         </Typography>
         <div className={classes.searchBar}>
           <SearchBar
-          // 4 awards
+            // 4 awards
             // value={'gs563k'} 
             //default
             //  value={url}
@@ -155,9 +162,10 @@ export default function App() {
               data.coins?.map((coin, idx) => {
                 return (
 
-                  <Grid item={true} lg={2} xl={2} xs={6} sm={4} md={3}>
+                  <Grid key={idx} item={true} lg={2} xl={2} xs={6} sm={4} md={3}>
                     <Paper className={classes.paper}>
-                      <Typography key={idx} align="center" variant="body1" gutterBottom>
+                      <Avatar alt={coin.name + ' icon'} src={coin.icon} />
+                      <Typography className={classes.awardCardText} variant="body1" gutterBottom>
                         {coin.name}
                       </Typography>
                     </Paper>
@@ -169,10 +177,10 @@ export default function App() {
           </Grid>
         </div>
 
-        <div className={classes.footer}>
-          <Copyright />
-        </div>
+      <div className={classes.footer}>
+        <Copyright />
+      </div>
       </Box>
-    </Container>
+    </Container >
   );
 }
