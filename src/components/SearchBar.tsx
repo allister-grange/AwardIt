@@ -48,7 +48,7 @@ export default function SearchBar(props: any) {
                 endAdornment={
                 <InputAdornment position="end">
                     <IconButton aria-label="search" onClick={props.onSearchClick}>
-                        {props.isSearching ? <CircularProgress size={28}/> :  <Search />}
+                        {props.isSearching ? <CircularProgress style={{color: 'coral'}} size={28}/> :  <Search style={{color: 'coral'}}/>}
                     </IconButton>
                 </InputAdornment>
                 }

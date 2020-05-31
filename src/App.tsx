@@ -10,6 +10,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
 import SearchBar from './components/SearchBar';
 import Copyright from './components/Copyright';
+import Fade from '@material-ui/core/Fade';
+import Tooltip from '@material-ui/core/Tooltip';
 import clsx from "clsx";
 
 import axios from 'axios';
@@ -25,7 +27,24 @@ class CoinData {
     // need to convert from object to array here
     this.coins = results.data.coins;
     this.totalCost = results.data.total_cost;
+    // console.log(results)
   }
+}
+
+class Coin {
+  coin_price: number;
+  count: number;
+  icon: string;
+  name: string;
+
+  constructor(coin_price:number, count:number, icon:string, name:string){
+    this.coin_price = coin_price;
+    this.count = count;
+    this.icon = icon;
+    this.name = name;
+
+  }
+
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,10 +84,16 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       height: '80px',
       display: 'flex',
-    alignItems: 'center'
+      alignItems: 'center',
+      '&:hover': {
+        background: "coral",
+        "& $awardCardText": {
+          color: "white"
+        }
+      },
     },
     awardCardText: {
-      paddingLeft: '15px'
+      paddingLeft: '15px',
     }
   }));
 
@@ -111,6 +136,12 @@ export default function App() {
     return axios.get(lambdaEndPoint + 'ewt93j');
   }
 
+  const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
+    const priceA = coinA.coin_price;
+    const priceB = coinB.coin_price;
+
+    return priceB - priceA;
+}
 
   //will be used for css transition
   const onSearchClick = () => {
@@ -119,10 +150,15 @@ export default function App() {
 
     let result = getDataFromAPI().then((result) => {
 
+      let unSortedCoins: Coin[] = Object.values(result.data.coins);
+      let sortedCoins= unSortedCoins.sort(sortCoinsByDescendingPrice);
+
+      console.log(sortedCoins)
+
       let newCointData = {
         data: {
           total_cost: result.data.total_cost,
-          coins: Object.values(result.data.coins)
+          coins: sortedCoins
         }
       }
       setData(new CoinData(newCointData))
@@ -137,8 +173,8 @@ export default function App() {
   return (
     <Container maxWidth="xl">
       <Box my={4}>
-        <Typography align="center" variant="h4" component="h1" gutterBottom>
-          calculate reddit awards total estimated cost
+        <Typography align="center" variant="h5" component="h1" gutterBottom>
+          calculate the cost of awards on a reddit post
         </Typography>
         <div className={classes.searchBar}>
           <SearchBar
@@ -152,34 +188,38 @@ export default function App() {
             handleChange={handleChange}
             isSearching={isSearching} />
         </div>
-        <Typography align="center" variant="h4" component="h1" gutterBottom>
-          {'total cost of coins is ' + data.totalCost}
-        </Typography>
+
 
         <div className={classes.awardsGrid}>
           <Grid container spacing={3}>
             {
               data.coins?.map((coin, idx) => {
                 return (
+                    <Grid key={idx} item={true} lg={2} xl={2} xs={6} sm={4} md={3}>
+                                        <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}  title={coin.coin_price + " coins"} placement="top" aria-label="coin price" arrow>
 
-                  <Grid key={idx} item={true} lg={2} xl={2} xs={6} sm={4} md={3}>
-                    <Paper className={classes.paper}>
-                      <Avatar alt={coin.name + ' icon'} src={coin.icon} />
-                      <Typography className={classes.awardCardText} variant="body1" gutterBottom>
-                        {coin.name}
-                      </Typography>
-                    </Paper>
-                  </Grid>
+                      <Paper className={classes.paper}>
+                        <Avatar alt={coin.name + ' icon'} src={coin.icon} />
+                        <Typography className={classes.awardCardText} variant="body1" gutterBottom>
+                          {coin.count + 'x ' + coin.name}
+                        </Typography>
+                      </Paper>
+                      </Tooltip>
 
+                    </Grid>
                 )
               })
             }
           </Grid>
         </div>
 
-      <div className={classes.footer}>
-        <Copyright />
-      </div>
+        <Typography align="center" variant="h4" component="h1" gutterBottom>
+          {'total cost of coins is ' + data.totalCost}
+        </Typography>
+
+        <div className={classes.footer}>
+          <Copyright />
+        </div>
       </Box>
     </Container >
   );
