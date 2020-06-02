@@ -64,9 +64,14 @@ export default function SearchBar(props: any) {
                 value={props.value}
                 onFocus={props.setIsSearchBarFocused(true)}
                 onChange={props.handleChange()}
+                onKeyPress={(ev) => {
+                  if (ev.key === 'Enter') {
+                      props.onSearchClick()
+                  }
+                }}          
                 endAdornment={
                 <InputAdornment position="end">
-                    <IconButton aria-label="search" onClick={props.onSearchClick}>
+                    <IconButton type="submit" aria-label="search" onClick={props.onSearchClick}>
                         {props.isSearching ? <CircularProgress style={{color: 'coral'}} size={28}/> :  <Search style={{color: 'coral'}}/>}
                     </IconButton>
                 </InputAdornment>
