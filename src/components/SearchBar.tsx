@@ -7,6 +7,7 @@ import FilledInput from '@material-ui/core/FilledInput';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
+
 import Box from '@material-ui/core/Box';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
-    alignContent: 'center'
+    alignContent: 'center',
   },
   margin: {
     margin: theme.spacing(1),
@@ -32,9 +33,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const useOutlinedInputStyles = makeStyles(theme => ({
+  root: {
+    "& $notchedOutline": {
+      borderColor: "grey"
+    },
+    "&:hover $notchedOutline": {
+      borderColor: "coral",
+    },
+    "&$focused $notchedOutline": {
+      borderColor: "coral"
+    }
+  },
+  focused: {},
+  notchedOutline: {}
+}));
+
 export default function SearchBar(props: any) {
   const classes = useStyles();
-
+  const outlinedInputClasses = useOutlinedInputStyles();
 
   return (
     <div className={classes.root}>
@@ -43,7 +60,9 @@ export default function SearchBar(props: any) {
             <OutlinedInput
                 fullWidth={true}
                 id="outlined-adornment"
+                classes={outlinedInputClasses}
                 value={props.value}
+                onFocus={props.setIsSearchBarFocused(true)}
                 onChange={props.handleChange()}
                 endAdornment={
                 <InputAdornment position="end">

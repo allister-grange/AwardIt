@@ -12,6 +12,8 @@ import SearchBar from './components/SearchBar';
 import Copyright from './components/Copyright';
 import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
+import Slide from '@material-ui/core/Slide';
+
 import clsx from "clsx";
 
 import axios from 'axios';
@@ -37,19 +39,17 @@ class Coin {
   icon: string;
   name: string;
 
-  constructor(coin_price:number, count:number, icon:string, name:string){
+  constructor(coin_price: number, count: number, icon: string, name: string) {
     this.coin_price = coin_price;
     this.count = count;
     this.icon = icon;
     this.name = name;
 
   }
-
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-
     root: {
       display: 'flex',
       flexWrap: 'wrap',
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '25ch',
     },
     searchBar: {
-      // paddingTop: 'calc(50vh - 150px)',
+      paddingTop: 'calc(50vh - 150px)',
     },
     footer: {
       position: 'absolute',
@@ -73,10 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
     awardsGrid: {
       flexGrow: 1,
       padding: '50px',
-      // paddingRight: '100px',
-      // marginLeft: '100px',
-      // marginRight: '100px',
-      backgroundColor: '#F5F5F5',
+      // backgroundColor: '#F5F5F5',
     },
     paper: {
       padding: theme.spacing(2),
@@ -94,13 +91,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     awardCardText: {
       paddingLeft: '15px',
+    },
+    raisedSearchBar: {
+      // paddingTop: 'calc(50vh - 150px)',
     }
   }));
 
 
 export default function App() {
-
-  // https://www.fullstackoasis.com/articles/2019/08/19/how-to-call-the-reddit-rest-api-using-node-js-part-i/
 
   //https://www.reddit.com/api/v1/authorize?client_id=T6Wd6ejCgIp1Pw&response_type=code&state=poo&redirect_uri=http://localhost:8080&duration=permanent&scope=identity
 
@@ -112,9 +110,11 @@ export default function App() {
 
   const [hasSearched, setHasSearched] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [displayingCoins, setDisplayingCoins] = useState(false);
+  const [searchBarFocus, setIsSearchBarFocused] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
-      coins: [],
+      coins: undefined,
       total_cost: 0
     }
   }));
@@ -133,7 +133,8 @@ export default function App() {
     //   },
     // };
 
-    return axios.get(lambdaEndPoint + 'ewt93j');
+    return axios.get(lambdaEndPoint + 'gs563k');
+    // return axios.get(lambdaEndPoint + url);
   }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
@@ -141,19 +142,16 @@ export default function App() {
     const priceB = coinB.coin_price;
 
     return priceB - priceA;
-}
+  }
 
   //will be used for css transition
   const onSearchClick = () => {
     setIsSearching(true);
-    setHasSearched(!hasSearched);
 
     let result = getDataFromAPI().then((result) => {
 
       let unSortedCoins: Coin[] = Object.values(result.data.coins);
-      let sortedCoins= unSortedCoins.sort(sortCoinsByDescendingPrice);
-
-      console.log(sortedCoins)
+      let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
 
       let newCointData = {
         data: {
@@ -162,7 +160,15 @@ export default function App() {
         }
       }
       setData(new CoinData(newCointData))
+      setHasSearched(true);
+
     }).catch((err) => {
+      setData(new CoinData({
+        data: {
+          coins: undefined,
+          total_cost: 0
+        }
+      }));
       console.log(err);
     })
       .finally(() => {
@@ -176,14 +182,14 @@ export default function App() {
         <Typography align="center" variant="h5" component="h1" gutterBottom>
           calculate the cost of awards on a reddit post
         </Typography>
-        <div className={classes.searchBar}>
+        <div className={hasSearched ? classes.raisedSearchBar : classes.searchBar}>
           <SearchBar
             // 4 awards
             // value={'gs563k'} 
             //default
-            //  value={url}
-
-            value={'62sjuh'}
+            value={url}
+            setIsSearchBarFocused={setIsSearchBarFocused}
+            // value={'62sjuh'}
             onSearchClick={onSearchClick}
             handleChange={handleChange}
             isSearching={isSearching} />
@@ -191,31 +197,38 @@ export default function App() {
 
 
         <div className={classes.awardsGrid}>
-          <Grid container spacing={3}>
-            {
-              data.coins?.map((coin, idx) => {
-                return (
+          <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
+            <Grid container spacing={3}>
+              {
+                data.coins?.map((coin, idx) => {
+                  return (
                     <Grid key={idx} item={true} lg={2} xl={2} xs={6} sm={4} md={3}>
-                                        <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}  title={coin.coin_price + " coins"} placement="top" aria-label="coin price" arrow>
+                      <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={coin.coin_price + " coins"} placement="top" aria-label="coin price" arrow>
 
-                      <Paper className={classes.paper}>
-                        <Avatar alt={coin.name + ' icon'} src={coin.icon} />
-                        <Typography className={classes.awardCardText} variant="body1" gutterBottom>
-                          {coin.count + 'x ' + coin.name}
-                        </Typography>
-                      </Paper>
+                        <Paper className={classes.paper}>
+                          <Avatar alt={coin.name + ' icon'} src={coin.icon} />
+                          <Typography className={classes.awardCardText} variant="body1" gutterBottom>
+                            {coin.count + 'x ' + coin.name}
+                          </Typography>
+                        </Paper>
                       </Tooltip>
 
                     </Grid>
-                )
-              })
-            }
-          </Grid>
+                  )
+                })
+              }
+            </Grid>
+          </Slide>
         </div>
 
-        <Typography align="center" variant="h4" component="h1" gutterBottom>
-          {'total cost of coins is ' + data.totalCost}
-        </Typography>
+        {
+          displayingCoins ?
+            <Typography align="center" variant="h4" component="h1" gutterBottom>
+              {'total cost of coins is ' + data.totalCost}
+            </Typography> :
+            null
+        }
+
 
         <div className={classes.footer}>
           <Copyright />
