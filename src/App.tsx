@@ -124,6 +124,29 @@ export default function App() {
     setUrl(event.target.value);
   };
 
+  const highestPossiblePrice = ( apiPrice: any) => {
+
+    const lowestCoinRatio: number = 1.99 / 500;
+
+    let highestCostPrice = lowestCoinRatio * apiPrice
+
+    return roundToTwoDp(highestCostPrice);
+  }
+
+  const lowestPossiblePrice = ( apiPrice: any) => {
+
+    const highestCoinRatio: number = 99.99 / 40000;
+
+    let lowestCostPrice = highestCoinRatio * apiPrice
+
+    return roundToTwoDp(lowestCostPrice);
+  }
+
+  const roundToTwoDp = (input: number) => {
+    return Math.round((input + Number.EPSILON) * 100) / 100
+  }
+
+
   const getDataFromAPI = () => {
 
     // const httpOptions = {
@@ -133,7 +156,7 @@ export default function App() {
     //   },
     // };
 
-    return axios.get(lambdaEndPoint + 'gs563k');
+    return axios.get(lambdaEndPoint + 'ewt93j');
     // return axios.get(lambdaEndPoint + url);
   }
 
@@ -179,6 +202,9 @@ export default function App() {
   return (
     <Container maxWidth="xl">
       <Box my={4}>
+        <Typography align="center" variant="h3" component="h3" gutterBottom>
+          awardit
+        </Typography>
         <Typography align="center" variant="h5" component="h1" gutterBottom>
           calculate the cost of awards on a reddit post
         </Typography>
@@ -198,7 +224,9 @@ export default function App() {
 
         <div className={classes.awardsGrid}>
           <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
-            <Grid container spacing={3}>
+            <Grid   alignItems="center"
+  justify="center"
+ container spacing={3}>
               {
                 data.coins?.map((coin, idx) => {
                   return (
@@ -223,8 +251,8 @@ export default function App() {
 
         {
           displayingCoins ?
-            <Typography align="center" variant="h4" component="h1" gutterBottom>
-              {'total cost of coins is ' + data.totalCost}
+            <Typography align="center" variant="body1" gutterBottom>
+              {'total estimated cost of coins is $' + lowestPossiblePrice(data.totalCost) + ' to $' + highestPossiblePrice(data.totalCost)}
             </Typography> :
             null
         }

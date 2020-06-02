@@ -32,6 +32,11 @@ export default function Copyright() {
           </Link>{' '}
           {new Date().getFullYear()}
           {'.'}
+          <br />
+          {'using estimates from the cheapest and most expensive bundles found at '}
+          <Link color="inherit" href="https://www.reddit.com/coins/">
+              {'https://www.reddit.com/coins'}
+          </Link>
         </Typography>
     );
   }
