@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '25ch',
     },
     searchBar: {
-      paddingTop: 'calc(50vh - 150px)',
+      paddingTop: 'calc(50vh - 200px)',
     },
     footer: {
       position: 'absolute',
@@ -94,6 +94,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     raisedSearchBar: {
       // paddingTop: 'calc(50vh - 150px)',
+    },
+    errorText: {
+      color: 'red'
     }
   }));
 
@@ -109,6 +112,8 @@ export default function App() {
   const classes = useStyles();
 
   const [hasSearched, setHasSearched] = useState(false);
+  const [errorOnSearch, setErrorOnSearch] = useState(false);
+  const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [searchBarFocus, setIsSearchBarFocused] = useState(false);
@@ -124,7 +129,7 @@ export default function App() {
     setUrl(event.target.value);
   };
 
-  const highestPossiblePrice = ( apiPrice: any) => {
+  const highestPossiblePrice = (apiPrice: any) => {
 
     const lowestCoinRatio: number = 1.99 / 500;
 
@@ -133,7 +138,7 @@ export default function App() {
     return roundToTwoDp(highestCostPrice);
   }
 
-  const lowestPossiblePrice = ( apiPrice: any) => {
+  const lowestPossiblePrice = (apiPrice: any) => {
 
     const highestCoinRatio: number = 99.99 / 40000;
 
@@ -156,8 +161,8 @@ export default function App() {
     //   },
     // };
 
-    return axios.get(lambdaEndPoint + 'ewt93j');
-    // return axios.get(lambdaEndPoint + url);
+    // return axios.get(lambdaEndPoint + 'ewt93j');
+    return axios.get(lambdaEndPoint + url);
   }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
@@ -170,8 +175,18 @@ export default function App() {
   //will be used for css transition
   const onSearchClick = () => {
     setIsSearching(true);
+    setNoAwardsForPost(false)
+    setErrorOnSearch(false)
 
     let result = getDataFromAPI().then((result) => {
+
+      console.log(result)
+
+      if (result.data.coins == {}){
+        setNoAwardsForPost(true)
+        return;
+      }
+
 
       let unSortedCoins: Coin[] = Object.values(result.data.coins);
       let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
@@ -192,7 +207,8 @@ export default function App() {
           total_cost: 0
         }
       }));
-      console.log(err);
+      setErrorOnSearch(true)
+      setDisplayingCoins(false)
     })
       .finally(() => {
         setIsSearching(false);
@@ -224,9 +240,9 @@ export default function App() {
 
         <div className={classes.awardsGrid}>
           <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
-            <Grid   alignItems="center"
-  justify="center"
- container spacing={3}>
+            <Grid alignItems="center"
+              justify="center"
+              container spacing={3}>
               {
                 data.coins?.map((coin, idx) => {
                   return (
@@ -247,6 +263,22 @@ export default function App() {
               }
             </Grid>
           </Slide>
+          {
+            errorOnSearch ?
+              <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
+                {"error on search :( I'm either broken or your url is malformed - make sure the ID of the post is in the url"}
+              </Typography>
+
+              : null
+          }
+
+          {
+            noAwardsForPost ?
+              <Typography align="center" variant="body1" gutterBottom>
+                {'no awards on that post :('}
+              </Typography> :
+              null
+          }
         </div>
 
         {
@@ -256,6 +288,8 @@ export default function App() {
             </Typography> :
             null
         }
+
+
 
 
         <div className={classes.footer}>
