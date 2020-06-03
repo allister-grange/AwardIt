@@ -174,19 +174,22 @@ export default function App() {
 
   //will be used for css transition
   const onSearchClick = () => {
-    setIsSearching(true);
+
+    if(url === '')
+      return
+
+    setIsSearching(true)
     setNoAwardsForPost(false)
     setErrorOnSearch(false)
 
     let result = getDataFromAPI().then((result) => {
 
-      console.log(result)
+      // console.log(result)
 
-      if (result.data.coins == {}){
+      if (Object.keys(result.data.coins).length === 0 ){
         setNoAwardsForPost(true)
         return;
       }
-
 
       let unSortedCoins: Coin[] = Object.values(result.data.coins);
       let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);

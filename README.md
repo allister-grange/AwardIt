@@ -1,6 +1,7 @@
 # Awardit
 
 ## TODO
-- Input validation
-- Errors displaying when the service is down 
-- Estimate for total cost of coins
+- Get HTTPS on the website
+- Making it mobile friendly
+- Get a nice logo going 
+- Create the other www.domain using https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-create-buckets
