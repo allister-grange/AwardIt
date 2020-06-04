@@ -26,17 +26,22 @@ export default function Copyright() {
   
     return (
         <Typography className='footer' variant="body2" color="textSecondary" align="center">
-          {'Copyright © '}
+          {/* {'Copyright © '}
           <Link color="inherit" href="https://material-ui.com/">
             Allister Grange
           </Link>{' '}
           {new Date().getFullYear()}
           {'.'}
-          <br />
-          {'using estimates from the cheapest and most expensive bundles found at '}
-          <Link color="inherit" href="https://www.reddit.com/coins/">
-              {'https://www.reddit.com/coins'}
+          <br /> */}
+          {'using estimates from the cheapest and most expensive bundles found on '}
+          <Link color="secondary" href="https://www.reddit.com/coins/">
+              {'reddit'}
           </Link>
+          <br /> 
+          {/* {'check me out on '}
+          <Link color="secondary" href="https://www.linkedin.com/in/allister-grange-3b3927171/">
+              {'linkedin'}
+          </Link> */}
         </Typography>
     );
   }

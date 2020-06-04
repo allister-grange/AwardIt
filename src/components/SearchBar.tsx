@@ -55,7 +55,7 @@ export default function SearchBar(props: any) {
 
   return (
     <div className={classes.root}>
-            <FormControl style={{width:'calc(100% - 150px)'}} className={clsx(classes.margin, classes.textField)} variant="outlined">
+            <FormControl style={{width:'93%'}} className={clsx(classes.margin, classes.textField)} variant="outlined">
             <InputLabel htmlFor="outlined-adornment">post url</InputLabel>
             <OutlinedInput
                 fullWidth={true}
