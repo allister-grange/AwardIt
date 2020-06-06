@@ -38,10 +38,8 @@ export default function Copyright() {
               {'reddit'}
           </Link>
           <br /> 
-          {/* {'check me out on '}
-          <Link color="secondary" href="https://www.linkedin.com/in/allister-grange-3b3927171/">
-              {'linkedin'}
-          </Link> */}
+          {'made by Allister Grange '}
+         
         </Typography>
     );
   }

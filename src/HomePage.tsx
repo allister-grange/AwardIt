@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '50px',
       paddingBottom: '0px',
       paddingTop: '25px',
+      width: '100%'
     },
     paper: {
       padding: theme.spacing(2),
@@ -253,7 +254,8 @@ export default function App() {
               <Grid 
                 alignItems="center"
                 justify="center"
-                container spacing={3}>
+                container spacing={3}
+                >
                 {
                   data.coins?.map((coin, idx) => {
                     return (
