@@ -3,10 +3,7 @@
 
 <p align="center">
     <kbd>
-        <img  src="demo/homescreen.png">
-    </kbd>
-    <kbd>
-        <img  src="demo/posts.png">
+        <img src="demo/demo.gif">
     </kbd>
 </p>
 
