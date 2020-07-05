@@ -96,8 +96,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function App() {
 
-  //https://www.reddit.com/api/v1/authorize?client_id=T6Wd6ejCgIp1Pw&response_type=code&state=poo&redirect_uri=http://localhost:8080&duration=permanent&scope=identity
-
   //todo figure out env files for client side
   const lambdaEndPoint = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount?url=';
   const secret = process.env.REDDIT_SECRET;
