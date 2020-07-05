@@ -13,23 +13,17 @@ import Copyright from './components/Copyright';
 import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import Slide from '@material-ui/core/Slide';
-
-import clsx from "clsx";
-
 import axios from 'axios';
 
 require('dotenv').config()
 
 class CoinData {
   totalCost?: number;
-  // todo change this into another object from an any
   coins?: Array<any>;
 
   constructor(results: any) {
-    // need to convert from object to array here
     this.coins = results.data.coins;
     this.totalCost = results.data.total_cost;
-    // console.log(results)
   }
 }
 
@@ -232,10 +226,14 @@ export default function App() {
           style={{ height: '100%' }}
           direction="column"
           alignItems="center">
-
-          <Typography align="center" variant="h3" component="h3" className={classes.textPadding}gutterBottom>
-            awardit
-          </Typography>
+          
+          <div style={{display: 'flex', flexDirection: 'row'}}>
+            <img className="img-responsive" src={"trophy.png"} alt="logo" style={{height:'100px', width: '100px'}}/>
+            <Typography align="center" variant="h3" component="h3" className={classes.textPadding}gutterBottom>
+              awardit
+            </Typography>
+            <img className="img-responsive" src={"trophy.png"} alt="logo" style={{height:'100px', width: '100px'}}/>
+          </div>
           <Typography align="center" variant="h5" component="h1" gutterBottom>
             calculate the cost of awards on a reddit post
           </Typography>
@@ -260,7 +258,7 @@ export default function App() {
                   data.coins?.map((coin, idx) => {
                     return (
                       <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={6} md={3}>
-                        <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={coin.coin_price + " coins"} placement="top" aria-label="coin price" arrow>
+                        <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={(coin.coin_price * coin.count) + " coins"} placement="top" aria-label="coin price" arrow>
                           <Paper className={classes.paper}>
                             <Avatar alt={coin.name + ' icon'} src={coin.icon} />
                             <Typography className={classes.awardCardText} variant="body1" gutterBottom>
