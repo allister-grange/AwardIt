@@ -2,8 +2,12 @@
 
 
 <p align="center">
-    <img width=600 src="demo/homescreen.png">
-    <img width=600 src="demo/posts.png">
+    <kbd>
+        <img width=600 src="demo/homescreen.png">
+    </kbd>
+    <kbd>
+        <img width=600 src="demo/posts.png">
+    </kbd>
 </p>
 
 
