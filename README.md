@@ -1,12 +1,10 @@
 # Awardit (awardit.info)
 
-
 <p align="center">
     <kbd>
         <img src="demo/demo.gif">
     </kbd>
 </p>
-
 
 ## Motivation
 
