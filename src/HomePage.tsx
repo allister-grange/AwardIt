@@ -144,15 +144,6 @@ export default function App() {
 
 
   const getDataFromAPI = () => {
-
-    // const httpOptions = {
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //     'Authorization': 'Bearer ',
-    //   },
-    // };
-
-    // return axios.get(lambdaEndPoint + 'ewt93j');
     return axios.get(lambdaEndPoint + url);
   }
 
@@ -163,7 +154,6 @@ export default function App() {
     return priceB - priceA;
   }
 
-  //will be used for css transition
   const onSearchClick = () => {
 
     if (url === '')
@@ -175,7 +165,7 @@ export default function App() {
 
     let result = getDataFromAPI().then((result) => {
 
-      // console.log(result)
+      console.log(JSON.stringify(result))
 
       if (Object.keys(result.data.coins).length === 0) {
         //reset coins
@@ -194,13 +184,13 @@ export default function App() {
       let unSortedCoins: Coin[] = Object.values(result.data.coins);
       let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
 
-      let newCointData = {
+      let newCoinData = {
         data: {
           total_cost: result.data.total_cost,
           coins: sortedCoins
         }
       }
-      setData(new CoinData(newCointData))
+      setData(new CoinData(newCoinData))
       setHasSearched(true);
 
     }).catch((err) => {
