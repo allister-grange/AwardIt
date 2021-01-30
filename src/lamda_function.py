@@ -1,23 +1,29 @@
 import json
-from botocore.vendored import requests
+# from botocore.vendored import requests
+import requests
+import sys
 
 # TODO some regex check
+
+
 def validate_url(url):
-    if(len(url)!=6):
+    if(len(url) != 6):
         return False
     return True
 
+
 # if the url is ill formatted just find the 6 character string and return in
-def find_id(url):
+def find_id_from_url(url):
 
     splitUrl = url.split('/')
-    
-    for sequence in splitUrl: 
+
+    for sequence in splitUrl:
         if(len(sequence) == 6 and sequence != 'https:'):
             return sequence
 
     # throw an error here
-    return 'ERROR NO ID'
+    raise ValueError('No ID was able to be parsed from the URL')
+
 
 def format_awards_response(awards):
 
@@ -33,41 +39,68 @@ def format_awards_response(awards):
         formatted_award['count'] = award['count']
         formatted_award['icon'] = award['icon_url']
         totalCost += int(award['coin_price']) * int(award['count'])
-        
+
         res['coins'][name] = formatted_award
-        
+
     res['total_cost'] = totalCost
     return res
 
-def lambda_handler(event, context):
+
+# param is_post is 'true' if the api request is for a post, false for a comment
+# this is because they have two different end points on the reddit api
+def reddit_api_get_request(id, is_post):
     user_agent = 'AwardsEstimator by allig256'
-    url = event['queryStringParameters']['url']
-    reddit_base_url = 'https://www.reddit.com/api/info.json?id=t3_'
     headers = {'User-Agent': user_agent}
 
-    # using split strings 
-    try:
-        id = url.split('/')[4]
-        
-    except IndexError: 
-        id = find_id(url)
-
-    if(validate_url(id) == False):
-        print("That's a wrong formatted id, trying to just find the id")
-        id = find_id(url)
+    if(is_post):
+        reddit_base_url = 'https://www.reddit.com/api/info.json?id=t3_'
+    else:
+        reddit_base_url = 'https://www.reddit.com/api/info.json?id=t1_'
 
     res = requests.get(reddit_base_url + id, headers=headers)
+    return res
+
+
+def lambda_handler(url):
+    # def lambda_handler(event, context):
+
+    # url = event['queryStringParameters']['url']
+
+    # if the url is a nice copy/paste from the browser it should be easy to get the id
+    try:
+        id = url.split('/')[4]
+
+    except IndexError:
+        id = find_id_from_url(url)
+
+    if(validate_url(id) == False):
+        print("That's a wrong formatted id, trying to parse the id from the url")
+        id = find_id_from_url(url)
+
+    if(id is None or (len(id) != 6 and len(id) != 7)):
+        raise ValueError('The parsed ID was not in the correct format. Id = ' + id)
+
+    if(len(id) == 6):
+        # make a url request
+        res = reddit_api_get_request(id, True)
+    elif(len(id) == 7):
+        # make a comment reqest
+        res = reddit_api_get_request(id, False)
+
+    if res is None:
+        raise ValueError('The API request did not return a result')
 
     data = json.loads(res.text)
 
     awards = data['data']['children'][0]['data']['all_awardings']
-
     awards_res = format_awards_response(awards)
 
     print(awards_res)
 
-    # TODO implement
     return {
         'statusCode': 200,
         'body': json.dumps(awards_res)
     }
+
+
+lambda_handler(sys.argv[1])
