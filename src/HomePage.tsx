@@ -13,6 +13,8 @@ import Copyright from './components/Copyright';
 import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import Slide from '@material-ui/core/Slide';
+import { Switch } from '@material-ui/core';
+
 import axios from 'axios';
 
 require('dotenv').config()
@@ -97,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
 
   //todo figure out env files for client side
-  const lambdaEndPoint = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount?url=';
+  const lambdaEndPoint = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
   const secret = process.env.REDDIT_SECRET;
 
   const classes = useStyles();
@@ -107,6 +109,7 @@ export default function App() {
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(false);
+  const [postOrComment, setPostOrComment] = useState("post");
   const [searchBarFocus, setIsSearchBarFocused] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
@@ -118,6 +121,15 @@ export default function App() {
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
+  };
+
+  const toggleChecked = () => {
+    if (postOrComment === "post") {
+      setPostOrComment("comment");
+    }
+    else {
+      setPostOrComment("post");
+    }
   };
 
   const highestPossiblePrice = (apiPrice: any) => {
@@ -144,7 +156,7 @@ export default function App() {
 
 
   const getDataFromAPI = () => {
-    return axios.get(lambdaEndPoint + url);
+    return axios.get(lambdaEndPoint + '?url=' + url + '?post-or-comment=' + postOrComment);
   }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
@@ -159,9 +171,9 @@ export default function App() {
     if (url === '')
       return
 
-    setIsSearching(true)
-    setNoAwardsForPost(false)
-    setErrorOnSearch(false)
+    setIsSearching(true);
+    setNoAwardsForPost(false);
+    setErrorOnSearch(false);
 
     let result = getDataFromAPI().then((result) => {
 
@@ -209,84 +221,105 @@ export default function App() {
   }
 
   return (
-      <Container className={classes.container} maxWidth="xl">
-        <Grid container
-          style={{ height: '100%' }}
-          direction="column"
-          alignItems="center">
-          
-          <div style={{display: 'flex', flexDirection: 'row'}}>
-            <img className="img-responsive" src={"trophy.png"} alt="logo" style={{height:'100px', width: '100px'}}/>
-            <Typography align="center" variant="h3" component="h3" className={classes.textPadding}gutterBottom>
-              awardit
+    <Container className={classes.container} maxWidth="xl">
+      <Grid container
+        style={{ height: '100%' }}
+        direction="column"
+        alignItems="center">
+
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
+          <Typography align="center" variant="h3" component="h3" className={classes.textPadding} gutterBottom>
+            awardit
             </Typography>
-            <img className="img-responsive" src={"trophy.png"} alt="logo" style={{height:'100px', width: '100px'}}/>
-          </div>
-          <Typography align="center" variant="h5" component="h1" gutterBottom>
-            calculate the cost of awards on a reddit post
+          <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
+        </div>
+        <Typography align="center" variant="h5" component="h1" gutterBottom>
+          calculate the cost of awards on a reddit post
           </Typography>
 
-          <div className={hasSearched ? classes.raisedSearchBar : classes.searchBar}>
-            <SearchBar
-              value={url}
-              setIsSearchBarFocused={setIsSearchBarFocused}
-              onSearchClick={onSearchClick}
-              handleChange={handleChange}
-              isSearching={isSearching} />
-          </div>
+        <div className={hasSearched ? classes.raisedSearchBar : classes.searchBar}>
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            spacing={0}
+          >
+            <Grid item xs={12}>
+              <SearchBar
+                value={url}
+                setIsSearchBarFocused={setIsSearchBarFocused}
+                onSearchClick={onSearchClick}
+                handleChange={handleChange}
+                isSearching={isSearching} />
 
-          <div className={classes.awardsGrid}>
-            <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
-              <Grid 
-                alignItems="center"
-                justify="center"
-                container spacing={3}
-                >
-                {
-                  data.coins?.map((coin, idx) => {
-                    return (
-                      <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={6} md={3}>
-                        <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={(coin.coin_price * coin.count) + " coins"} placement="top" aria-label="coin price" arrow>
-                          <Paper className={classes.paper}>
-                            <Avatar alt={coin.name + ' icon'} src={coin.icon} />
-                            <Typography className={classes.awardCardText} variant="body1" gutterBottom>
-                              {coin.count + 'x ' + coin.name}
-                            </Typography>
-                          </Paper>
-                        </Tooltip>
-                      </Grid>
-                    )
-                  })
-                }
-              </Grid>
-            </Slide>
-            {
-              errorOnSearch ?
-                <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
-                  {"error on search :( I'm either broken or your url is malformed - make sure the ID of the post is in the url"}
-                </Typography>
+            </Grid>
 
-                : null
-            }
+            <Grid item xs>
+              <div style={{
+                display: 'flex', flexDirection: 'row',
+                justifyContent: 'center', alignItems: 'center'
+              }}>
+                <p>post</p>
+                <Switch onChange={toggleChecked} />
+                <p>comment</p>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
 
-            {
-              noAwardsForPost ?
-                <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                  {'no awards on that post :('}
-                </Typography> :
-                null
-            }
+        <div className={classes.awardsGrid}>
+          <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
+            <Grid
+              alignItems="center"
+              justify="center"
+              container spacing={3}
+            >
+              {
+                data.coins?.map((coin, idx) => {
+                  return (
+                    <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={6} md={3}>
+                      <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={(coin.coin_price * coin.count) + " coins"} placement="top" aria-label="coin price" arrow>
+                        <Paper className={classes.paper}>
+                          <Avatar alt={coin.name + ' icon'} src={coin.icon} />
+                          <Typography className={classes.awardCardText} variant="body1" gutterBottom>
+                            {coin.count + 'x ' + coin.name}
+                          </Typography>
+                        </Paper>
+                      </Tooltip>
+                    </Grid>
+                  )
+                })
+              }
+            </Grid>
+          </Slide>
+          {
+            errorOnSearch ?
+              <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
+                {"error on search :( I'm either broken or your url is malformed - make sure the ID of the post is in the url"}
+              </Typography>
 
-            {
-              displayingCoins ?
-                <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                  {'total estimated cost of coins is $' + lowestPossiblePrice(data.totalCost) + ' to $' + highestPossiblePrice(data.totalCost)}
-                </Typography> :
-                null
-            }
-          </div>
+              : null
+          }
 
-        </Grid>
-      </Container >
+          {
+            noAwardsForPost ?
+              <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
+                {'no awards on that post :('}
+              </Typography> :
+              null
+          }
+
+          {
+            displayingCoins ?
+              <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
+                {'total estimated cost of coins is $' + lowestPossiblePrice(data.totalCost) + ' to $' + highestPossiblePrice(data.totalCost)}
+              </Typography> :
+              null
+          }
+        </div>
+
+      </Grid>
+    </Container >
   );
 }

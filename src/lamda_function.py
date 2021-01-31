@@ -69,6 +69,7 @@ def lambda_handler(url, post_or_comment):
     # def lambda_handler(event, context):
 
     # url = event['queryStringParameters']['url']
+    # post_or_comment = event['queryStringParameters']['post-or-comment']
 
     # if the url is a nice copy/paste from the browser it should be easy to get the id
     try:
