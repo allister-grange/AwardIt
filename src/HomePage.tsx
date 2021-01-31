@@ -156,7 +156,7 @@ export default function App() {
 
 
   const getDataFromAPI = () => {
-    return axios.get(lambdaEndPoint + '?url=' + url + '?post-or-comment=' + postOrComment);
+    return axios.get(`${lambdaEndPoint}?url=${url}&post-or-comment=${postOrComment}`);
   }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
