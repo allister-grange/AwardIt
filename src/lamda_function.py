@@ -13,12 +13,14 @@ def validate_url(url):
 
 
 # if the url is ill formatted just find the 6 character string and return in
-def find_id_from_url(url):
+def find_id_from_url(url, post_or_comment):
 
     splitUrl = url.split('/')
 
     for sequence in splitUrl:
-        if(len(sequence) == 6 and sequence != 'https:'):
+        if(len(sequence) == 6 and sequence != 'https:' and post_or_comment == 'post'):
+            return sequence
+        elif(len(sequence) == 7 and post_or_comment == 'comment'):
             return sequence
 
     # throw an error here
@@ -53,15 +55,17 @@ def reddit_api_get_request(id, is_post):
     headers = {'User-Agent': user_agent}
 
     if(is_post):
+        print("Getting a post's awards")
         reddit_base_url = 'https://www.reddit.com/api/info.json?id=t3_'
     else:
+        print("Getting a comments's awards")
         reddit_base_url = 'https://www.reddit.com/api/info.json?id=t1_'
 
     res = requests.get(reddit_base_url + id, headers=headers)
     return res
 
 
-def lambda_handler(url):
+def lambda_handler(url, post_or_comment):
     # def lambda_handler(event, context):
 
     # url = event['queryStringParameters']['url']
@@ -71,19 +75,21 @@ def lambda_handler(url):
         id = url.split('/')[4]
 
     except IndexError:
-        id = find_id_from_url(url)
+        id = find_id_from_url(url, post_or_comment)
 
     if(validate_url(id) == False):
         print("That's a wrong formatted id, trying to parse the id from the url")
-        id = find_id_from_url(url)
+        id = find_id_from_url(url, post_or_comment)
 
     if(id is None or (len(id) != 6 and len(id) != 7)):
         raise ValueError('The parsed ID was not in the correct format. Id = ' + id)
 
-    if(len(id) == 6):
+    res = None
+
+    if(len(id) == 6 and post_or_comment == "post"):
         # make a url request
         res = reddit_api_get_request(id, True)
-    elif(len(id) == 7):
+    elif(len(id) == 7 and post_or_comment == "comment"):
         # make a comment reqest
         res = reddit_api_get_request(id, False)
 
@@ -102,5 +108,7 @@ def lambda_handler(url):
         'body': json.dumps(awards_res)
     }
 
+if(len(sys.argv) != 3):
+    raise AssertionError('Please provice two arguments; "id" "post|comment"')
 
-lambda_handler(sys.argv[1])
+lambda_handler(sys.argv[1], sys.argv[2])
