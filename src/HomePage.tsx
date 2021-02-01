@@ -13,6 +13,7 @@ import Slide from '@material-ui/core/Slide';
 import { Switch } from '@material-ui/core';
 
 import axios from 'axios';
+import AwardsDisplay from './components/AwardsDisplay';
 
 require('dotenv').config()
 
@@ -37,7 +38,6 @@ class Coin {
     this.count = count;
     this.icon = icon;
     this.name = name;
-
   }
 }
 
@@ -263,39 +263,18 @@ export default function App() {
         </div>
 
         <div className={classes.awardsGrid}>
-          <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>
-            <Grid
-              alignItems="center"
-              justify="center"
-              container spacing={3}
-            >
-              {
-                data.coins?.map((coin, idx) => {
-                  return (
-                    <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={6} md={3}>
-                      <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title={(coin.coin_price * coin.count) + " coins"} placement="top" aria-label="coin price" arrow>
-                        <Paper className={classes.paper}>
-                          <Avatar alt={coin.name + ' icon'} src={coin.icon} />
-                          <Typography className={classes.awardCardText} variant="body1" gutterBottom>
-                            {coin.count + 'x ' + coin.name}
-                          </Typography>
-                        </Paper>
-                      </Tooltip>
-                    </Grid>
-                  )
-                })
-              }
-            </Grid>
-          </Slide>
+          <AwardsDisplay
+            hasSearched={hasSearched}
+            data={data}
+            setDisplayingCoins={setDisplayingCoins}
+          />
           {
             errorOnSearch ?
               <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
                 {"error on search :( I'm either broken or your search is malformed - make sure the ID of the post is in the url"}
               </Typography>
-
               : null
           }
-
           {
             noAwardsForPost ?
               <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
@@ -307,7 +286,6 @@ export default function App() {
               </Typography> :
               null
           }
-
           {
             displayingCoins ?
               <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
