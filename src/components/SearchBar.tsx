@@ -62,7 +62,6 @@ export default function SearchBar(props: any) {
                 id="outlined-adornment"
                 classes={outlinedInputClasses}
                 value={props.value}
-                onFocus={props.setIsSearchBarFocused(true)}
                 onChange={props.handleChange()}
                 onKeyPress={(ev) => {
                   if (ev.key === 'Enter') {

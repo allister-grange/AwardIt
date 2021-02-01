@@ -1,15 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
-import Link from '@material-ui/core/Link';
 import SearchBar from './components/SearchBar';
-import Copyright from './components/Copyright';
 import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import Slide from '@material-ui/core/Slide';
@@ -100,7 +97,6 @@ export default function App() {
 
   //todo figure out env files for client side
   const lambdaEndPoint = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
-  const secret = process.env.REDDIT_SECRET;
 
   const classes = useStyles();
 
@@ -110,7 +106,6 @@ export default function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [postOrComment, setPostOrComment] = useState("post");
-  const [searchBarFocus, setIsSearchBarFocused] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
@@ -248,7 +243,6 @@ export default function App() {
             <Grid item xs={12}>
               <SearchBar
                 value={url}
-                setIsSearchBarFocused={setIsSearchBarFocused}
                 onSearchClick={onSearchClick}
                 handleChange={handleChange}
                 isSearching={isSearching} />
@@ -296,7 +290,7 @@ export default function App() {
           {
             errorOnSearch ?
               <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
-                {"error on search :( I'm either broken or your url is malformed - make sure the ID of the post is in the url"}
+                {"error on search :( I'm either broken or your search is malformed - make sure the ID of the post is in the url"}
               </Typography>
 
               : null
@@ -305,7 +299,11 @@ export default function App() {
           {
             noAwardsForPost ?
               <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                {'no awards on that post :('}
+                {
+                  postOrComment === "post" ?
+                    'no awards on that post :(' :
+                    'no awards on that comment :('
+                }
               </Typography> :
               null
           }
