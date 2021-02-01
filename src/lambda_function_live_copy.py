@@ -5,8 +5,8 @@ from botocore.vendored import requests
 def find_id_from_url(url, post_or_comment):
 
     splitUrl = url.split('/')
-
-    for sequence in splitUrl:
+ 
+    for sequence in reversed(splitUrl):
         if(len(sequence) == 6 and sequence != 'https:' and post_or_comment == 'post'):
             return sequence
         elif(len(sequence) == 7 and post_or_comment == 'comment'):
