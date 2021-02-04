@@ -1,5 +1,6 @@
+import { RestoreOutlined } from '@material-ui/icons';
 import axios from 'axios';
-import { Coin } from '../types';
+import { Coin, CoinData } from '../types';
 
 const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
 const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
@@ -12,9 +13,45 @@ export const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], total_
     return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
 }
 
-export const getAwardCountForId = async(req: string, postOrComment: string): Promise<any> => {
+const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
+    const priceA = coinA.coin_price;
+    const priceB = coinB.coin_price;
+
+    return priceB - priceA;
+}
+
+export const getAwardCountForId = async (req: string, postOrComment: string): Promise<CoinData> => {
 
     return await axios.get(`${redditAwardCountLambdaUrl}?url=${req}&post-or-comment=${postOrComment}`)
-    .then(res => res)
-    .catch(err => err)
+        .then(result => {
+
+            if (Object.keys(result.data.coins).length === 0) {
+                let newCoinData = {
+                    data: {
+                        coins: undefined,
+                        total_cost: 0,
+                        permalink: undefined,
+                        id: undefined
+                    }
+                }
+
+                return newCoinData;
+            }
+            else {
+                let unSortedCoins: Coin[] = Object.values(result.data.coins);
+                let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
+
+                let newCoinData = {
+                    data: {
+                        total_cost: result.data.total_cost,
+                        coins: sortedCoins,
+                        permalink: result.data.permalink,
+                        id: result.data.id
+                    }
+                }
+                return newCoinData
+            }
+
+        })
+        .catch(err => err)
 }

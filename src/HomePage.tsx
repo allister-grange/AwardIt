@@ -97,14 +97,6 @@ export default function App() {
     }
   };
 
-
-  const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
-    const priceA = coinA.coin_price;
-    const priceB = coinB.coin_price;
-
-    return priceB - priceA;
-  }
-
   const onSearchClick = () => {
 
     if (url === '')
@@ -116,34 +108,20 @@ export default function App() {
 
     let result = getAwardCountForId(url, postOrComment)
       .then(result => {
-        if (Object.keys(result.data.coins).length === 0) {
-          //reset coins
-          let newCointData = {
-            data: {
-              total_cost: result.data.total_cost,
-              coins: undefined
-            }
-          }
-          setDisplayingCoins(false)
-          setData(new CoinData(newCointData))
-          setNoAwardsForPost(true)
-          return;
+       
+        if(!result.coins){
+          // TODO see if I can get rid of these state options
+          setDisplayingCoins(false);
+          setNoAwardsForPost(true);
+          return
         }
 
-        let unSortedCoins: Coin[] = Object.values(result.data.coins);
-        let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
-
-        let newCoinData = {
-          data: {
-            total_cost: result.data.total_cost,
-            coins: sortedCoins
-          }
-        }
-        setData(new CoinData(newCoinData));
+        setData(result);
         setHasSearched(true);
-        // TODO turn this into a nice object
-        let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins,
-          newCoinData.data.total_cost, result.data.permalink).then((res) => {
+
+        // TODO move this somewhere else
+        let res = createAwardItLeaderBoardEntry(result.id, result.coins,
+          result.totalCost, result.permalink).then((res) => {
 
             console.log(res)
           });
@@ -153,7 +131,9 @@ export default function App() {
         setData(new CoinData({
           data: {
             coins: undefined,
-            total_cost: 0
+            total_cost: 0,
+            permalink: undefined,
+            id: undefined
           }
         }));
         setErrorOnSearch(true)

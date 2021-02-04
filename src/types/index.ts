@@ -1,10 +1,14 @@
 export class CoinData {
-    totalCost?: number;
-    coins?: Array<any>;
+    totalCost: number;
+    coins: Array<any>;
+    id: string;
+    permalink: string;
 
     constructor(results: any) {
         this.coins = results.data.coins;
         this.totalCost = results.data.total_cost;
+        this.permalink = results.data.permalink;
+        this.id = results.data.id;
     }
 }
 
