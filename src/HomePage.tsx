@@ -2,43 +2,17 @@ import React, { useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import SearchBar from './components/SearchBar';
-import Tooltip from '@material-ui/core/Tooltip';
-import Slide from '@material-ui/core/Slide';
 import { Switch } from '@material-ui/core';
 
-import axios from 'axios';
 import AwardsDisplay from './components/AwardsDisplay';
 import Header from './components/Header';
 import SearchResponses from './components/SearchResponses';
+import { createAwardItLeaderBoardEntry, getAwardCountForId } from './services/lambda';
+import { Coin, CoinData } from './types';
 
 require('dotenv').config()
-
-class CoinData {
-  totalCost?: number;
-  coins?: Array<any>;
-
-  constructor(results: any) {
-    this.coins = results.data.coins;
-    this.totalCost = results.data.total_cost;
-  }
-}
-
-class Coin {
-  coin_price: number;
-  count: number;
-  icon: string;
-  name: string;
-
-  constructor(coin_price: number, count: number, icon: string, name: string) {
-    this.coin_price = coin_price;
-    this.count = count;
-    this.icon = icon;
-    this.name = name;
-  }
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -94,11 +68,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function App() {
 
-  //todo figure out env files for client side
-  const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
-  const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
-  const getAwardItLeaderBoardEntriesLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/getRedditLeaderboardEntries';
-
   const classes = useStyles();
 
   const [hasSearched, setHasSearched] = useState(false);
@@ -128,16 +97,6 @@ export default function App() {
     }
   };
 
-  const getAwardCount = () => {
-    return axios.get(`${redditAwardCountLambdaUrl}?url=${url}&post-or-comment=${postOrComment}`);
-  }
-
-  const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], total_cost: number, permalink: string) => {
-
-    const body = { id, awards, total_cost, permalink }
-
-    return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
-  }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
     const priceA = coinA.coin_price;
@@ -155,56 +114,57 @@ export default function App() {
     setNoAwardsForPost(false);
     setErrorOnSearch(false);
 
-    let result = getAwardCount().then((result) => {
+    let result = getAwardCountForId(url, postOrComment)
+      .then(result => {
+        if (Object.keys(result.data.coins).length === 0) {
+          //reset coins
+          let newCointData = {
+            data: {
+              total_cost: result.data.total_cost,
+              coins: undefined
+            }
+          }
+          setDisplayingCoins(false)
+          setData(new CoinData(newCointData))
+          setNoAwardsForPost(true)
+          return;
+        }
 
-      console.log(JSON.stringify(result))
+        let unSortedCoins: Coin[] = Object.values(result.data.coins);
+        let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
 
-      if (Object.keys(result.data.coins).length === 0) {
-        //reset coins
-        let newCointData = {
+        let newCoinData = {
           data: {
             total_cost: result.data.total_cost,
-            coins: undefined
+            coins: sortedCoins
           }
         }
+        setData(new CoinData(newCoinData));
+        setHasSearched(true);
+        // TODO turn this into a nice object
+        let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins,
+          newCoinData.data.total_cost, result.data.permalink).then((res) => {
+
+            console.log(res)
+          });
+
+      })
+      .catch(err => {
+        setData(new CoinData({
+          data: {
+            coins: undefined,
+            total_cost: 0
+          }
+        }));
+        setErrorOnSearch(true)
         setDisplayingCoins(false)
-        setData(new CoinData(newCointData))
-        setNoAwardsForPost(true)
-        return;
-      }
-
-      let unSortedCoins: Coin[] = Object.values(result.data.coins);
-      let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
-
-      let newCoinData = {
-        data: {
-          total_cost: result.data.total_cost,
-          coins: sortedCoins
-        }
-      }
-      setData(new CoinData(newCoinData));
-      setHasSearched(true);
-      // TODO turn this into a nice object
-      let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins,
-        newCoinData.data.total_cost, result.data.permalink).then((res) => {
-
-          console.log(res)
-        });
-
-
-    }).catch((err) => {
-      setData(new CoinData({
-        data: {
-          coins: undefined,
-          total_cost: 0
-        }
-      }));
-      setErrorOnSearch(true)
-      setDisplayingCoins(false)
-    })
+      })
       .finally(() => {
         setIsSearching(false);
-      })
+
+      });
+
+
   }
 
   return (
@@ -252,14 +212,14 @@ export default function App() {
             setDisplayingCoins={setDisplayingCoins}
           />
 
-          <SearchResponses 
+          <SearchResponses
             errorOnSearch={errorOnSearch}
             noAwardsForPost={noAwardsForPost}
             displayingCoins={displayingCoins}
             postOrComment={postOrComment}
             data={data}
           />
-        
+
         </div>
 
       </Grid>
