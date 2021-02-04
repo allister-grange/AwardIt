@@ -97,6 +97,17 @@ export default function App() {
     }
   };
 
+  const pushResultToLeaderboards = ({id, coins, totalCost, permalink}: CoinData) => {
+    createAwardItLeaderBoardEntry(id, coins,
+      totalCost, permalink)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
   const onSearchClick = () => {
 
     if (url === '')
@@ -108,24 +119,20 @@ export default function App() {
 
     let result = getAwardCountForId(url, postOrComment)
       .then(result => {
-       
-        if(!result.coins){
+
+        if(result.coins.length === 0){
           // TODO see if I can get rid of these state options
           setDisplayingCoins(false);
           setNoAwardsForPost(true);
           return
         }
 
+        console.log("there");
+        
         setData(result);
         setHasSearched(true);
-
-        // TODO move this somewhere else
-        let res = createAwardItLeaderBoardEntry(result.id, result.coins,
-          result.totalCost, result.permalink).then((res) => {
-
-            console.log(res)
-          });
-
+        pushResultToLeaderboards(result);
+        
       })
       .catch(err => {
         setData(new CoinData({
@@ -136,15 +143,12 @@ export default function App() {
             id: undefined
           }
         }));
-        setErrorOnSearch(true)
-        setDisplayingCoins(false)
+        setErrorOnSearch(true);
+        setDisplayingCoins(false);
       })
       .finally(() => {
         setIsSearching(false);
-
       });
-
-
   }
 
   return (

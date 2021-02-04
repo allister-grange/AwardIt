@@ -26,13 +26,13 @@ export const getAwardCountForId = async (req: string, postOrComment: string): Pr
         .then(result => {
 
             if (Object.keys(result.data.coins).length === 0) {
-                let newCoinData = {
-                    data: {
-                        coins: undefined,
-                        total_cost: 0,
-                        permalink: undefined,
-                        id: undefined
-                    }
+                let newCoinData: CoinData = {
+
+                    coins: [],
+                    totalCost: 0,
+                    permalink: '',
+                    id: ''
+
                 }
 
                 return newCoinData;
@@ -41,13 +41,11 @@ export const getAwardCountForId = async (req: string, postOrComment: string): Pr
                 let unSortedCoins: Coin[] = Object.values(result.data.coins);
                 let sortedCoins = unSortedCoins.sort(sortCoinsByDescendingPrice);
 
-                let newCoinData = {
-                    data: {
-                        total_cost: result.data.total_cost,
-                        coins: sortedCoins,
-                        permalink: result.data.permalink,
-                        id: result.data.id
-                    }
+                let newCoinData: CoinData = {
+                    totalCost: result.data.total_cost,
+                    coins: sortedCoins,
+                    permalink: result.data.permalink,
+                    id: result.data.id
                 }
                 return newCoinData
             }
