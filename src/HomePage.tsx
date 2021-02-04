@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
@@ -9,7 +9,7 @@ import { Switch } from '@material-ui/core';
 import AwardsDisplay from './components/AwardsDisplay';
 import Header from './components/Header';
 import SearchResponses from './components/SearchResponses';
-import { createAwardItLeaderBoardEntry, getAwardCountForId } from './services/lambda';
+import { createAwardItLeaderBoardEntry, getAwardCountForId, getAwardItLeaderBoardEntries } from './services/lambda';
 import { Coin, CoinData } from './types';
 
 require('dotenv').config()
@@ -76,6 +76,7 @@ export default function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [postOrComment, setPostOrComment] = useState("post");
+  const [leaderBoardData, setLeaderBoardData] = useState([] as CoinData[]);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
@@ -83,6 +84,20 @@ export default function App() {
     }
   }));
   const [url, setUrl] = React.useState('');
+
+  useEffect(() => {
+    console.log("data changed!!");
+
+    // I have a race condition here between this and pushResultToLeaderBoards
+    getAwardItLeaderBoardEntries()
+      .then(res => {
+        console.log(res);
+
+        setLeaderBoardData(res)
+      })
+      .catch(err => console.error(err))
+
+  }, [data]);
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
@@ -97,7 +112,7 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = ({id, coins, totalCost, permalink}: CoinData) => {
+  const pushResultToLeaderboards = ({ id, coins, totalCost, permalink }: CoinData) => {
     createAwardItLeaderBoardEntry(id, coins,
       totalCost, permalink)
       .then((res) => {
@@ -117,20 +132,20 @@ export default function App() {
     setNoAwardsForPost(false);
     setErrorOnSearch(false);
 
-    let result = getAwardCountForId(url, postOrComment)
+    getAwardCountForId(url, postOrComment)
       .then(result => {
 
-        if(result.coins.length === 0){
+        if (result.coins.length === 0) {
           // TODO see if I can get rid of these state options
           setDisplayingCoins(false);
           setNoAwardsForPost(true);
           return
         }
-        
+
         setData(result);
         setHasSearched(true);
         pushResultToLeaderboards(result);
-        
+
       })
       .catch(err => {
         setData(new CoinData({
@@ -182,6 +197,16 @@ export default function App() {
                 <p>post</p>
                 <Switch onChange={toggleChecked} />
                 <p>comment</p>
+              </div>
+            </Grid>
+            <Grid item xs>
+              <div style={{
+                display: 'flex', flexDirection: 'row',
+                justifyContent: 'center', alignItems: 'center'
+              }}>
+                <p>show leader board</p>
+                <Switch onChange={toggleChecked} />
+                {/* todo if the above is toggled, then change text to 'hide leaderboard */}
               </div>
             </Grid>
           </Grid>

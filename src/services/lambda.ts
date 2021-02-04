@@ -6,10 +6,19 @@ const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2
 const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
 const getAwardItLeaderBoardEntriesLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/getRedditLeaderboardEntries';
 
-export const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], totalCost: number, permalink: string) => {
+export const createAwardItLeaderBoardEntry = async(id: string, awards: Coin[], totalCost: number, permalink: string): Promise<CoinData> => {
 
     const body = { id, awards, totalCost, permalink }
-    return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
+    return await axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body)
+    .then(res => res)
+    .catch(err => err);
+}
+
+export const getAwardItLeaderBoardEntries = async (): Promise<CoinData[]> => {
+
+    return await axios.get(getAwardItLeaderBoardEntriesLambdaUrl)
+    .then(res => res.data)
+    .catch(err => err);
 }
 
 const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
