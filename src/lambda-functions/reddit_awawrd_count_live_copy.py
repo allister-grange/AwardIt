@@ -92,7 +92,7 @@ def lambda_handler(event, context):
 
     awards = data['data']['children'][0]['data']['all_awardings']
     permalink = 'www.reddit.com' + data['data']['children'][0]['data']['permalink']
-    awards_res = format_awards_response(awards, permalink)
+    awards_res = format_awards_response(awards, permalink, id)
 
     print(awards_res)
 

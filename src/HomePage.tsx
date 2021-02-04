@@ -206,7 +206,7 @@ export default function App() {
       setData(new CoinData(newCoinData));
       setHasSearched(true);
       // TODO turn this into a nice object
-      let res = createAwardItLeaderBoardEntry(url, newCoinData.data.coins, 
+      let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins, 
         newCoinData.data.total_cost, result.data.permalink ).then((res) => {
 
           console.log(res)
