@@ -48,11 +48,11 @@ const useStyles = makeStyles((theme: Theme) =>
         awardCardText: {
             paddingLeft: '15px',
         }
-    }));
+    })
+);
 
 export default function AwardsDisplay({ hasSearched, setDisplayingCoins, data }: AwardsDisplayPropTypes) {
     const classes = useStyles();
-    const outlinedInputClasses = useOutlinedInputStyles();
 
     return (
         <Slide direction="up" in={hasSearched} timeout={1000} onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)} mountOnEnter unmountOnExit>

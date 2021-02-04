@@ -12,6 +12,7 @@ import { Switch } from '@material-ui/core';
 import axios from 'axios';
 import AwardsDisplay from './components/AwardsDisplay';
 import Header from './components/Header';
+import SearchResponses from './components/SearchResponses';
 
 require('dotenv').config()
 
@@ -126,29 +127,6 @@ export default function App() {
       setPostOrComment("post");
     }
   };
-
-  const highestPossiblePrice = (apiPrice: any) => {
-
-    const lowestCoinRatio: number = 1.99 / 500;
-
-    let highestCostPrice = lowestCoinRatio * apiPrice
-
-    return roundToTwoDp(highestCostPrice);
-  }
-
-  const lowestPossiblePrice = (apiPrice: any) => {
-
-    const highestCoinRatio: number = 99.99 / 40000;
-
-    let lowestCostPrice = highestCoinRatio * apiPrice
-
-    return roundToTwoDp(lowestCostPrice);
-  }
-
-  const roundToTwoDp = (input: number) => {
-    return Math.round((input + Number.EPSILON) * 100) / 100
-  }
-
 
   const getAwardCount = () => {
     return axios.get(`${redditAwardCountLambdaUrl}?url=${url}&post-or-comment=${postOrComment}`);
@@ -273,31 +251,15 @@ export default function App() {
             data={data}
             setDisplayingCoins={setDisplayingCoins}
           />
-          {
-            errorOnSearch ?
-              <Typography align='center' variant="body1" className={classes.errorText} gutterBottom>
-                {"error on search :( I'm either broken or your search is malformed - make sure the ID of the post is in the url"}
-              </Typography>
-              : null
-          }
-          {
-            noAwardsForPost ?
-              <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                {
-                  postOrComment === "post" ?
-                    'no awards on that post :(' :
-                    'no awards on that comment :('
-                }
-              </Typography> :
-              null
-          }
-          {
-            displayingCoins ?
-              <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                {'total estimated cost of coins is $' + lowestPossiblePrice(data.totalCost) + ' to $' + highestPossiblePrice(data.totalCost)}
-              </Typography> :
-              null
-          }
+
+          <SearchResponses 
+            errorOnSearch={errorOnSearch}
+            noAwardsForPost={noAwardsForPost}
+            displayingCoins={displayingCoins}
+            postOrComment={postOrComment}
+            data={data}
+          />
+        
         </div>
 
       </Grid>
