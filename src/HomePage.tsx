@@ -126,8 +126,6 @@ export default function App() {
           setNoAwardsForPost(true);
           return
         }
-
-        console.log("there");
         
         setData(result);
         setHasSearched(true);

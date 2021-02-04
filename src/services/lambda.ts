@@ -6,10 +6,9 @@ const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2
 const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
 const getAwardItLeaderBoardEntriesLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/getRedditLeaderboardEntries';
 
-export const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], total_cost: number, permalink: string) => {
+export const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], totalCost: number, permalink: string) => {
 
-    const body = { id, awards, total_cost, permalink }
-
+    const body = { id, awards, totalCost, permalink }
     return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
 }
 
@@ -27,14 +26,11 @@ export const getAwardCountForId = async (req: string, postOrComment: string): Pr
 
             if (Object.keys(result.data.coins).length === 0) {
                 let newCoinData: CoinData = {
-
                     coins: [],
                     totalCost: 0,
                     permalink: '',
                     id: ''
-
                 }
-
                 return newCoinData;
             }
             else {
