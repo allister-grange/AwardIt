@@ -1,22 +1,5 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import FilledInput from '@material-ui/core/FilledInput';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
-import Box from '@material-ui/core/Box';
-
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import TextField from '@material-ui/core/TextField';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Search from '@material-ui/icons/Search'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { Avatar, createStyles, Fade, Grid, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
 
 const useOutlinedInputStyles = makeStyles(theme => ({

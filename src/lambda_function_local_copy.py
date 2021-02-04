@@ -27,7 +27,7 @@ def find_id_from_url(url, post_or_comment):
     raise ValueError('No ID was able to be parsed from the URL')
 
 
-def format_awards_response(awards):
+def format_awards_response(awards, permalink):
 
     res = {}
     res['coins'] = {}
@@ -45,6 +45,7 @@ def format_awards_response(awards):
         res['coins'][name] = formatted_award
 
     res['total_cost'] = totalCost
+    res['permalink'] = permalink
     return res
 
 
@@ -100,9 +101,8 @@ def lambda_handler(url, post_or_comment):
     data = json.loads(res.text)
 
     awards = data['data']['children'][0]['data']['all_awardings']
-    awards_res = format_awards_response(awards)
-
-    print(awards_res)
+    permalink = data['data']['children'][0]['data']['permalink']
+    awards_res = format_awards_response(awards, permalink)
 
     return {
         'statusCode': 200,

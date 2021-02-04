@@ -3,11 +3,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 import SearchBar from './components/SearchBar';
-import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import Slide from '@material-ui/core/Slide';
 import { Switch } from '@material-ui/core';
@@ -96,7 +93,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
 
   //todo figure out env files for client side
-  const lambdaEndPoint = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
+  const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
+  const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
+  const getAwardItLeaderBoardEntriesLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/getRedditLeaderboardEntries';
 
   const classes = useStyles();
 
@@ -150,8 +149,15 @@ export default function App() {
   }
 
 
-  const getDataFromAPI = () => {
-    return axios.get(`${lambdaEndPoint}?url=${url}&post-or-comment=${postOrComment}`);
+  const getAwardCount = () => {
+    return axios.get(`${redditAwardCountLambdaUrl}?url=${url}&post-or-comment=${postOrComment}`);
+  }
+
+  const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], total_cost: number, permalink: string) => {
+
+    const body = {id, awards, total_cost, permalink}
+
+    return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
   }
 
   const sortCoinsByDescendingPrice = (coinA: Coin, coinB: Coin) => {
@@ -170,7 +176,7 @@ export default function App() {
     setNoAwardsForPost(false);
     setErrorOnSearch(false);
 
-    let result = getDataFromAPI().then((result) => {
+    let result = getAwardCount().then((result) => {
 
       console.log(JSON.stringify(result))
 
@@ -197,8 +203,15 @@ export default function App() {
           coins: sortedCoins
         }
       }
-      setData(new CoinData(newCoinData))
+      setData(new CoinData(newCoinData));
       setHasSearched(true);
+      // TODO turn this into a nice object
+      let res = createAwardItLeaderBoardEntry(url, newCoinData.data.coins, 
+        newCoinData.data.total_cost, result.data.permalink ).then((res) => {
+
+          console.log(res)
+        });
+
 
     }).catch((err) => {
       setData(new CoinData({
