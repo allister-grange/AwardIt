@@ -11,6 +11,7 @@ import { Switch } from '@material-ui/core';
 
 import axios from 'axios';
 import AwardsDisplay from './components/AwardsDisplay';
+import Header from './components/Header';
 
 require('dotenv').config()
 
@@ -155,7 +156,7 @@ export default function App() {
 
   const createAwardItLeaderBoardEntry = (id: string, awards: Coin[], total_cost: number, permalink: string) => {
 
-    const body = {id, awards, total_cost, permalink}
+    const body = { id, awards, total_cost, permalink }
 
     return axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body);
   }
@@ -206,8 +207,8 @@ export default function App() {
       setData(new CoinData(newCoinData));
       setHasSearched(true);
       // TODO turn this into a nice object
-      let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins, 
-        newCoinData.data.total_cost, result.data.permalink ).then((res) => {
+      let res = createAwardItLeaderBoardEntry(result.data.id, newCoinData.data.coins,
+        newCoinData.data.total_cost, result.data.permalink).then((res) => {
 
           console.log(res)
         });
@@ -235,16 +236,7 @@ export default function App() {
         direction="column"
         alignItems="center">
 
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
-          <Typography align="center" variant="h3" component="h3" className={classes.textPadding} gutterBottom>
-            awardit
-            </Typography>
-          <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
-        </div>
-        <Typography align="center" variant="h5" component="h1" gutterBottom>
-          calculate the cost of awards on a reddit post
-          </Typography>
+        <Header />
 
         <div className={hasSearched ? classes.raisedSearchBar : classes.searchBar}>
           <Grid
