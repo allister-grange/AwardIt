@@ -11,6 +11,7 @@ import Header from './components/Header';
 import SearchResponses from './components/SearchResponses';
 import { createAwardItLeaderBoardEntry, getAwardCountForId, getAwardItLeaderBoardEntries } from './services/lambda';
 import { Coin, CoinData } from './types';
+import LeaderBoard from './components/LeaderBoard';
 
 require('dotenv').config()
 
@@ -77,6 +78,7 @@ export default function App() {
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState([] as CoinData[]);
+  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
@@ -91,9 +93,10 @@ export default function App() {
     // I have a race condition here between this and pushResultToLeaderBoards
     getAwardItLeaderBoardEntries()
       .then(res => {
-        console.log(res);
 
-        setLeaderBoardData(res)
+        const sortedLeaderBoardData = res.sort((a,b) => b.totalCost-a.totalCost)
+
+        setLeaderBoardData(sortedLeaderBoardData);
       })
       .catch(err => console.error(err))
 
@@ -205,7 +208,7 @@ export default function App() {
                 justifyContent: 'center', alignItems: 'center'
               }}>
                 <p>show leader board</p>
-                <Switch onChange={toggleChecked} />
+                <Switch onChange={() => setDisplayingLeaderBoard(!displayingLeaderBoard)} />
                 {/* todo if the above is toggled, then change text to 'hide leaderboard */}
               </div>
             </Grid>
@@ -225,6 +228,11 @@ export default function App() {
             displayingCoins={displayingCoins}
             postOrComment={postOrComment}
             data={data}
+          />
+
+          <LeaderBoard 
+            posts={leaderBoardData}
+            showingLeaderBoard={displayingLeaderBoard}
           />
 
         </div>
