@@ -7,7 +7,7 @@ const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.a
 const getAwardItLeaderBoardEntriesLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/getRedditLeaderboardEntries';
 
 export const createAwardItLeaderBoardEntry = async(id: string, awards: Coin[], totalCost: number, 
-    permalink: string, subReddit:string): Promise<CoinData> => {
+    permalink: string, subReddit: string): Promise<CoinData> => {
 
     const body = { id, awards, totalCost, permalink, subReddit }
     return await axios.post(`${createAwardItLeaderBoardEntryLambdaUrl}`, body)

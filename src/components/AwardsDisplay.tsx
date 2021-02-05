@@ -26,7 +26,7 @@ type CoinData = {
 type AwardsDisplayPropTypes = {
     hasSearched: boolean,
     setDisplayingCoins: React.Dispatch<React.SetStateAction<boolean>>,
-    data: CoinData
+    data: CoinData,
 }
 
 const useStyles = makeStyles((theme: Theme) =>

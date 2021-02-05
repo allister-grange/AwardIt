@@ -7,6 +7,10 @@ type LeaderBoardProps = {
     showingLeaderBoard: boolean
 }
 
+type LeaderBoardSegmentProps = {
+    message: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         textPadding: {
@@ -18,10 +22,19 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.secondary,
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-around'
         },
     })
 );
+
+const LeaderBoardSegment = (props: LeaderBoardSegmentProps) => {
+    return (
+        <Paper style={{ padding: 10, flex: 4 }}>
+            <Typography>
+                {props.message}
+            </Typography>
+        </Paper>
+    )
+}
 
 export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardProps) {
 
@@ -33,55 +46,39 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
                 container spacing={1}
             >
                 {
-                    posts.map((coin, idx) => {
+                    posts.map((leaderBoardEntry, idx) => {
                         return (
                             <Grid
                                 key={idx} item xl={12} xs={12} >
 
                                 <Paper className={classes.paper}
-                                    style={idx % 2 == 0 ? { backgroundColor: 'beige' } : { backgroundColor: 'white' }}>
-                                    <Paper style={{ padding: 10 }}>
-                                        <Typography>
-                                            {coin.id}
-                                        </Typography>
-                                    </Paper>
+                                    style={idx % 2 == 1 ? { backgroundColor: 'beige' } : { backgroundColor: 'white' }}>
 
-                                    <Paper style={{ padding: 10 }}>
-                                        <Typography>
-                                            {`r/${coin.subReddit}`}
-                                        </Typography>
-                                    </Paper>
+                                    <LeaderBoardSegment message={(idx + 1).toString()} />
+                                    <LeaderBoardSegment message={leaderBoardEntry.id} />
+                                    <LeaderBoardSegment message={`r/${leaderBoardEntry.subReddit}`} />
+                                    <LeaderBoardSegment message={leaderBoardEntry.totalCost.toString()} />
 
-                                    <Paper style={{ padding: 10 }}>
-                                        <Typography>
-                                            {coin.totalCost}
-                                        </Typography>
-                                    </Paper>
 
-                                    <Paper style={{ padding: 10 }}>
-                                        <Typography>
-                                            {coin.coins}
-                                        </Typography>
-                                    </Paper>
-
-                                    <Paper style={{ padding: 10 }}>
-                                        <Link href={coin.permalink} rel="noopener" target="_blank">
-                                            {coin.id.length === 7 ? "view comment" : "view post"}
+                                    <Paper style={{ padding: 10, flex: 6 }}>
+                                        <Link href={leaderBoardEntry.permalink} rel="noopener" target="_blank">
+                                            {leaderBoardEntry.id.length === 7 ? "view comment" : "view post"}
                                         </Link>
                                     </Paper>
+
                                 </Paper>
 
                                 {/* <Tooltip
                                     TransitionComponent={Fade}
                                     TransitionProps={{ timeout: 600 }}
-                                    title={(coin * coin.count) + " coins"}
+                                    title={(leaderBoardEntry * leaderBoardEntry.count) + " leaderBoardEntrys"}
                                     placement="top"
-                                    aria-label="coin price"
+                                    aria-label="leaderBoardEntry price"
                                     arrow >
                                     <Paper className={classes.paper}>
-                                        <Avatar alt={coin.name + ' icon'} src={coin.icon} />
+                                        <Avatar alt={leaderBoardEntry.name + ' icon'} src={leaderBoardEntry.icon} />
                                         <Typography className={classes.awardCardText} variant="body1" gutterBottom>
-                                            {coin.count + 'x ' + coin.name}
+                                            {leaderBoardEntry.count + 'x ' + leaderBoardEntry.name}
                                         </Typography>
                                     </Paper>
                                 </Tooltip> */}
@@ -90,6 +87,6 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
                     })
                 }
             </Grid>
-        </Slide>
+        </Slide >
     );
 }

@@ -176,7 +176,7 @@ export default function App() {
 
         <Header />
 
-        <div className={hasSearched ? classes.raisedSearchBar : classes.searchBar}>
+        <div className={(hasSearched || displayingLeaderBoard) ? classes.raisedSearchBar : classes.searchBar}>
           <Grid
             container
             justify="center"
@@ -208,7 +208,9 @@ export default function App() {
                 justifyContent: 'center', alignItems: 'center'
               }}>
                 <p>show leader board</p>
-                <Switch onChange={() => setDisplayingLeaderBoard(!displayingLeaderBoard)} />
+                <Switch onChange={() => {
+                  setDisplayingLeaderBoard(!displayingLeaderBoard);
+                }} />
                 {/* todo if the above is toggled, then change text to 'hide leaderboard */}
               </div>
             </Grid>
