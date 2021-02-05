@@ -94,7 +94,7 @@ export default function App() {
     getAwardItLeaderBoardEntries()
       .then(res => {
 
-        const sortedLeaderBoardData = res.sort((a,b) => b.totalCost-a.totalCost)
+        const sortedLeaderBoardData = res.sort((a,b) => b.totalCost-a.totalCost);
 
         setLeaderBoardData(sortedLeaderBoardData);
       })
@@ -115,9 +115,9 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = ({ id, coins, totalCost, permalink }: CoinData) => {
+  const pushResultToLeaderboards = ({ id, coins, totalCost, permalink, subReddit }: CoinData) => {
     createAwardItLeaderBoardEntry(id, coins,
-      totalCost, permalink)
+      totalCost, permalink, subReddit)
       .then((res) => {
         console.log(res)
       })

@@ -9,7 +9,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async event => {
   const requestBody = event.body ? JSON.parse(event.body) : event;
-  const { id, awards, totalCost, permalink } = requestBody;
+  const { id, awards, totalCost, permalink, subReddit } = requestBody;
   
   const params = {
     TableName: "AwardItLeaderboard",
@@ -17,7 +17,8 @@ exports.handler = async event => {
       id,
       awards,
       totalCost,
-      permalink
+      permalink,
+      subReddit
     }
   };
   try {

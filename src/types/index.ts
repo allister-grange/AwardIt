@@ -3,12 +3,14 @@ export class CoinData {
     coins: Array<any>;
     id: string;
     permalink: string;
+    subReddit: string;
 
     constructor(results: any) {
         this.coins = results.data.coins;
         this.totalCost = results.data.total_cost;
         this.permalink = results.data.permalink;
         this.id = results.data.id;
+        this.subReddit = results.data.subReddit;
     }
 }
 

@@ -13,10 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: '25px'
         },
         paper: {
-          padding: theme.spacing(2),
-          textAlign: 'center',
-          color: theme.palette.text.secondary,
-        },    
+            padding: theme.spacing(2),
+            textAlign: 'center',
+            color: theme.palette.text.secondary,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around'
+        },
     })
 );
 
@@ -34,31 +37,40 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
                         return (
                             <Grid
                                 key={idx} item xl={12} xs={12} >
-                                    
-                                    <Paper className={classes.paper}>
-                                        {`${coin.id} | ${coin.totalCost} | ${coin.coins} | `}
+
+                                <Paper className={classes.paper}
+                                    style={idx % 2 == 0 ? { backgroundColor: 'beige' } : { backgroundColor: 'white' }}>
+                                    <Paper style={{ padding: 10 }}>
+                                        <Typography>
+                                            {coin.id}
+                                        </Typography>
+                                    </Paper>
+
+                                    <Paper style={{ padding: 10 }}>
+                                        <Typography>
+                                            {`r/${coin.subReddit}`}
+                                        </Typography>
+                                    </Paper>
+
+                                    <Paper style={{ padding: 10 }}>
+                                        <Typography>
+                                            {coin.totalCost}
+                                        </Typography>
+                                    </Paper>
+
+                                    <Paper style={{ padding: 10 }}>
+                                        <Typography>
+                                            {coin.coins}
+                                        </Typography>
+                                    </Paper>
+
+                                    <Paper style={{ padding: 10 }}>
                                         <Link href={coin.permalink} rel="noopener" target="_blank">
                                             {coin.id.length === 7 ? "view comment" : "view post"}
                                         </Link>
                                     </Paper>
+                                </Paper>
 
-                                {/* <div style={{flexDirection: 'row', alignItems: 'self'}}>
-                                    <Typography>
-                                        {coin.id}
-                                    </Typography>
-                                    <Typography>
-                                        {coin.totalCost}
-                                    </Typography>
-                                    <Typography>
-                                        {coin.id}
-                                    </Typography>
-                                    <Typography>
-                                        <Link href={coin.permalink} rel="noopener" target="_blank">
-                                            {coin.id.length === 7 ? "view comment" : "view post"}
-                                        </Link>
-                                    </Typography>
-
-                                </div> */}
                                 {/* <Tooltip
                                     TransitionComponent={Fade}
                                     TransitionProps={{ timeout: 600 }}
