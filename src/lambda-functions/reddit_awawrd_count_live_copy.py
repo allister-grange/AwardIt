@@ -16,7 +16,7 @@ def find_id_from_url(url, post_or_comment):
     raise ValueError('No ID was able to be parsed from the URL')
 
 
-def format_awards_response(awards, permalink, id, sub_reddit):
+def format_awards_response(awards, permalink, id, sub_reddit, title):
 
     res = {}
     res['coins'] = {}
@@ -37,6 +37,7 @@ def format_awards_response(awards, permalink, id, sub_reddit):
     res['total_cost'] = totalCost
     res['subReddit'] = sub_reddit
     res['id'] = id
+    res['title'] = title
     return res
 
 
@@ -95,7 +96,9 @@ def lambda_handler(event, context):
     awards = data['data']['children'][0]['data']['all_awardings']
     sub_reddit = data['data']['children'][0]['data']['subreddit']
     permalink = 'https://www.reddit.com' + data['data']['children'][0]['data']['permalink']
-    awards_res = format_awards_response(awards, permalink, id, sub_reddit)
+    title = 'https://www.reddit.com' + data['data']['children'][0]['data']['title']
+
+    awards_res = format_awards_response(awards, permalink, id, sub_reddit, title)
 
     print(awards_res)
 

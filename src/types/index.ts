@@ -4,6 +4,7 @@ export class CoinData {
     id: string;
     permalink: string;
     subReddit: string;
+    title: string;
 
     constructor(results: any) {
         this.coins = results.data.coins;
@@ -11,6 +12,7 @@ export class CoinData {
         this.permalink = results.data.permalink;
         this.id = results.data.id;
         this.subReddit = results.data.subReddit;
+        this.title = results.data.title;
     }
 }
 

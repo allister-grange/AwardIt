@@ -93,7 +93,8 @@ export default function App() {
     // I have a race condition here between this and pushResultToLeaderBoards
     getAwardItLeaderBoardEntries()
       .then(res => {
-
+        console.log(res);
+        
         const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
 
         setLeaderBoardData(sortedLeaderBoardData);
@@ -147,8 +148,8 @@ export default function App() {
 
         setData(result);
         setHasSearched(true);
+        console.log(result);
         await pushResultToLeaderboards(result);
-        console.log("finihsed");
 
       })
       .catch(err => {

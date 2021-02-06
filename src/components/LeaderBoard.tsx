@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, createStyles, Grid, Link, makeStyles, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Box, createStyles, Fade, Grid, Link, makeStyles, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
 import { CoinData } from '../types';
 import LinkIcon from '@material-ui/icons/Link';
 
@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.secondary,
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-around',
             width: '70%',
         },
     })
@@ -67,21 +66,42 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
 
                                 <Paper className={classes.paper} >
 
-                                    <div>
+                                    <div style={{display:'flex', justifyContent:'flex-start'}}>
                                         <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
                                     </div>
 
 
-                                    {/* <div style={{display:'flex', alignItems: 'row'}}> */}
-                                    <div>
+                                    <div style={{flexGrow: 2, display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
                                         <Link style={{ display: 'flex', alignItems: 'center' }} href={leaderBoardEntry.permalink}
                                             rel="noopener" target="_blank">
-                                            {"This is the title of the reddit post Blah blah"}
+                                            {leaderBoardEntry.title}
                                             <LinkIcon />
                                             {/* {leaderBoardEntry.id.length === 7 ? "view comment" : "view post"} */}
                                         </Link>
 
-                                        <LeaderBoardSegment message={"These are the coinnnsss"} />
+                                        <div style={{ display: 'flex', flexDirection: 'row', paddingTop: '15px' }}>
+                                            {
+                                                leaderBoardEntry.coins?.map((coin) => (
+                                                    <Tooltip
+                                                        TransitionComponent={Fade}
+                                                        TransitionProps={{ timeout: 600 }}
+                                                        title={(coin.coin_price * coin.count) + " coins"}
+                                                        placement="top"
+                                                        aria-label="coin price"
+                                                        arrow >
+                                                            <div style={{display: 'flex', flexDirection: 'row', paddingRight: '13px'}}>
+                                                        {/* <Paper className={classes.paper}> */}
+                                                            <Typography variant="body1" gutterBottom>
+                                                                {coin.count + 'x '}
+                                                            </Typography>
+                                                            <Avatar style={{ height: '20px', width: '20px' }} sizes='sm' alt={coin.name + ' icon'} src={coin.icon} />
+                                                        {/* </Paper> */}
+                                                        </div>
+                                                    </Tooltip>
+
+                                                ))
+                                            }
+                                        </div>
                                     </div>
 
                                     <div>
