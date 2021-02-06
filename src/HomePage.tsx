@@ -94,7 +94,7 @@ export default function App() {
     getAwardItLeaderBoardEntries()
       .then(res => {
 
-        const sortedLeaderBoardData = res.sort((a,b) => b.totalCost-a.totalCost);
+        const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
 
         setLeaderBoardData(sortedLeaderBoardData);
       })
@@ -115,15 +115,15 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = ({ id, coins, totalCost, permalink, subReddit }: CoinData) => {
-    createAwardItLeaderBoardEntry(id, coins,
+  const pushResultToLeaderboards = async ({ id, coins, totalCost, permalink, subReddit }: CoinData) => {
+    await createAwardItLeaderBoardEntry(id, coins,
       totalCost, permalink, subReddit)
       .then((res) => {
         console.log(res)
       })
       .catch(err => {
         console.log(err);
-      })
+      });
   }
 
   const onSearchClick = () => {
@@ -136,7 +136,7 @@ export default function App() {
     setErrorOnSearch(false);
 
     getAwardCountForId(url, postOrComment)
-      .then(result => {
+      .then(async result => {
 
         if (result.coins.length === 0) {
           // TODO see if I can get rid of these state options
@@ -147,7 +147,8 @@ export default function App() {
 
         setData(result);
         setHasSearched(true);
-        pushResultToLeaderboards(result);
+        await pushResultToLeaderboards(result);
+        console.log("finihsed");
 
       })
       .catch(err => {
@@ -232,7 +233,7 @@ export default function App() {
             data={data}
           />
 
-          <LeaderBoard 
+          <LeaderBoard
             posts={leaderBoardData}
             showingLeaderBoard={displayingLeaderBoard}
           />

@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.secondary,
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-around'
+            justifyContent: 'space-around',
+            width: '70%',
         },
     })
 );
@@ -54,29 +55,44 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
     return (
         <Slide direction="up" in={showingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
             <Grid
-                container spacing={1}
+                container spacing={1} justify="center"
             >
 
                 {
                     posts.map((leaderBoardEntry, idx) => {
                         return (
                             <Grid
-                                key={idx} item xl={12} xs={12} >
+                                style={{ display: 'flex', justifyContent: 'center' }} key={idx} item xl={12} xs={12}
+                            >
 
                                 <Paper className={classes.paper} >
 
-                                    <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
-                                    <LeaderBoardSegment message={leaderBoardEntry.id} description={'id'} />
-                                    <LeaderBoardSegment message={`r/${leaderBoardEntry.subReddit}`} description={'subreddit'} />
-                                    <LeaderBoardSegment message={leaderBoardEntry.totalCost.toString()} description={'points'} />
-
-                                    <div style={{ padding: 10, flex: 6, maxWidth: 150, marginLeft: 6, marginRight: 6 }}>
-                                        <Link style={{ display: 'flex', justifyContent: 'center' }} href={leaderBoardEntry.permalink}
-                                            rel="noopener" target="_blank">
-                                            <LinkIcon />
-                                            {leaderBoardEntry.id.length === 7 ? "view comment" : "view post"}
-                                        </Link>
+                                    <div>
+                                        <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
                                     </div>
+
+
+                                    {/* <div style={{display:'flex', alignItems: 'row'}}> */}
+                                    <div>
+                                        <Link style={{ display: 'flex', alignItems: 'center' }} href={leaderBoardEntry.permalink}
+                                            rel="noopener" target="_blank">
+                                            {"This is the title of the reddit post Blah blah"}
+                                            <LinkIcon />
+                                            {/* {leaderBoardEntry.id.length === 7 ? "view comment" : "view post"} */}
+                                        </Link>
+
+                                        <LeaderBoardSegment message={"These are the coinnnsss"} />
+                                    </div>
+
+                                    <div>
+                                        <LeaderBoardSegment message={leaderBoardEntry.totalCost.toString()} description={'points'} />
+                                        <LeaderBoardSegment message={`r/${leaderBoardEntry.subReddit}`} description={'subreddit'} />
+                                        <LeaderBoardSegment message={leaderBoardEntry.id} description={'id'} />
+                                    </div>
+                                    {/* </div> */}
+
+                                    {/* <div style={{ padding: 10, flex: 6, maxWidth: 150, marginLeft: 6, marginRight: 6 }}>
+                                    </div> */}
 
                                 </Paper>
 
