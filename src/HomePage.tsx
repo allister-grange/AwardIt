@@ -116,9 +116,9 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = async ({ id, coins, totalCost, permalink, subReddit }: CoinData) => {
+  const pushResultToLeaderboards = async ({ id, coins, totalCost, permalink, subReddit, title}: CoinData) => {
     await createAwardItLeaderBoardEntry(id, coins,
-      totalCost, permalink, subReddit)
+      totalCost, permalink, subReddit, title)
       .then((res) => {
         console.log(res)
       })

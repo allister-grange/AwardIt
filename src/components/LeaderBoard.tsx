@@ -66,17 +66,15 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
 
                                 <Paper className={classes.paper} >
 
-                                    <div style={{display:'flex', justifyContent:'flex-start'}}>
+                                    <div>
                                         <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
                                     </div>
 
 
-                                    <div style={{flexGrow: 2, display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
                                         <Link style={{ display: 'flex', alignItems: 'center' }} href={leaderBoardEntry.permalink}
                                             rel="noopener" target="_blank">
-                                            {leaderBoardEntry.title}
-                                            <LinkIcon />
-                                            {/* {leaderBoardEntry.id.length === 7 ? "view comment" : "view post"} */}
+                                            {leaderBoardEntry.title.length > 150 ? leaderBoardEntry.title.slice(0 ,150) + '...' : leaderBoardEntry.title}
                                         </Link>
 
                                         <div style={{ display: 'flex', flexDirection: 'row', paddingTop: '15px' }}>
