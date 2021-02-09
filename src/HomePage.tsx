@@ -183,7 +183,7 @@ export default function App() {
         alignItems="center"
         justify="center">
 
-        <Grid item direction="row" xs={12}>
+        <Grid item xs={12}>
           <Header />
         </Grid>
 
@@ -247,15 +247,10 @@ export default function App() {
                 <div>
                   <LeaderBoard
                     posts={currentPageData}
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                    handlePageChange={handlePageChange}
                   />
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Pagination
-                      page={currentPage}
-                      count={pageCount}
-                      defaultPage={1}
-                      onChange={handlePageChange}
-                      variant="outlined" />
-                  </div>
                 </div>
               </Slide> : null
           }
