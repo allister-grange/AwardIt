@@ -59,10 +59,10 @@ export default function LeaderBoard({ posts }: LeaderBoardProps) {
                                     <Grid item xs={1}>
                                         <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
                                     </Grid>
-                                    <Grid item container md={8} sm={8} xs={11} spacing={2}>
+                                    <Grid item justify="center" container md={8} sm={8} xs={11} spacing={2}>
                                         <Grid item sm>
                                             <div style={{padding: 10}}>
-                                                <Link style={{  }} href={leaderBoardEntry.permalink}
+                                                <Link href={leaderBoardEntry.permalink}
                                                     rel="noopener" target="_blank">
                                                     {leaderBoardEntry.title.length > 300 ? leaderBoardEntry.title.slice(0, 300) + '...' : leaderBoardEntry.title}
                                                 </Link>

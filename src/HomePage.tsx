@@ -18,9 +18,6 @@ require('dotenv').config()
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      height: '100%',
-    },
     margin: {
       margin: theme.spacing(1),
     },
@@ -52,19 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
         }
       },
     },
-    awardCardText: {
-      paddingLeft: '15px',
-    },
     raisedSearchBar: {
       width: '100%',
     },
-    errorText: {
-      paddingTop: '25px',
-      color: 'red'
-    },
-    textPadding: {
-      paddingTop: '25px'
-    }
   }));
 
 
@@ -115,7 +102,7 @@ export default function App() {
   useEffect(() => {
     console.log(currentPageData);
     console.log(currentPage);
-    
+
   }, [currentPage])
 
   const handleChange = (prop: any) => (event: any) => {
@@ -189,28 +176,29 @@ export default function App() {
   }
 
   return (
-    <Container className={classes.container} maxWidth="xl">
+    <Container maxWidth="xl">
       <Grid container
         style={{ height: '100%' }}
         direction="column"
-        alignItems="center">
+        alignItems="center"
+        justify="center">
 
-        <Header />
+        <Grid item direction="row" xs={12}>
+          <Header />
+        </Grid>
 
         <div className={(hasSearched || displayingLeaderBoard) ? classes.raisedSearchBar : classes.searchBar}>
           <Grid
             container
             justify="center"
-            alignItems="center"
-            spacing={0}
-          >
+            alignItems="center">
+
             <Grid item xs={12}>
               <SearchBar
                 value={url}
                 onSearchClick={onSearchClick}
                 handleChange={handleChange}
                 isSearching={isSearching} />
-
             </Grid>
 
             <Grid item xs>
@@ -260,10 +248,10 @@ export default function App() {
                   <LeaderBoard
                     posts={currentPageData}
                   />
-                  <div style={{display: 'flex', justifyContent: 'center'}}>
-                    <Pagination 
-                      page={currentPage} 
-                      count={pageCount} 
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Pagination
+                      page={currentPage}
+                      count={pageCount}
                       defaultPage={1}
                       onChange={handlePageChange}
                       variant="outlined" />

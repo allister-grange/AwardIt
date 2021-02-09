@@ -1,20 +1,20 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 export default function Header() {
 
     return (
-        <>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <Grid container justify="center">
+            <Grid container direction="row" justify="center">
                 <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
-                <Typography align="center" variant="h3" component="h3" style={{paddingTop: '25px'}} gutterBottom>
+                <Typography align="center" variant="h4" component="h4" style={{paddingTop: '25px'}} gutterBottom>
                     awardit
                 </Typography>
                 <img className="img-responsive" src={"trophy.png"} alt="logo" style={{ height: '100px', width: '100px' }} />
-            </div>
+            </Grid>
             <Typography align="center" variant="h5" component="h1" gutterBottom>
                 calculate the cost of awards on a reddit post
             </Typography>
-        </>
+        </ Grid>
     );
 }
