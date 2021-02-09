@@ -80,7 +80,7 @@ export default function App() {
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState([] as CoinData[]);
-  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
+  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
