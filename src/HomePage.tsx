@@ -4,7 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import SearchBar from './components/SearchBar';
-import { Switch } from '@material-ui/core';
+import { Slide, Switch } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
 
 import AwardsDisplay from './components/AwardsDisplay';
 import Header from './components/Header';
@@ -71,6 +72,7 @@ export default function App() {
 
   const classes = useStyles();
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [hasSearched, setHasSearched] = useState(false);
   const [errorOnSearch, setErrorOnSearch] = useState(false);
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
@@ -87,6 +89,13 @@ export default function App() {
   }));
   const [url, setUrl] = React.useState('');
 
+  // Pagination data
+  const PER_PAGE = 5;
+  const offset = (currentPage - 1) * PER_PAGE;
+  const currentPageData = leaderBoardData
+    .slice(offset, offset + PER_PAGE);
+  const pageCount = Math.ceil(leaderBoardData.length / PER_PAGE);
+
   useEffect(() => {
     console.log("data changed!!");
 
@@ -94,7 +103,7 @@ export default function App() {
     getAwardItLeaderBoardEntries()
       .then(res => {
         console.log(res);
-        
+
         const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
 
         setLeaderBoardData(sortedLeaderBoardData);
@@ -103,9 +112,19 @@ export default function App() {
 
   }, [data]);
 
+  useEffect(() => {
+    console.log(currentPageData);
+    console.log(currentPage);
+    
+  }, [currentPage])
+
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
   };
+
+  function handlePageChange(event: React.ChangeEvent<unknown>, pageNumber: number) {
+    setCurrentPage(pageNumber);
+  }
 
   const toggleChecked = () => {
     if (postOrComment === "post") {
@@ -116,7 +135,7 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = async ({ id, coins, totalCost, permalink, subReddit, title}: CoinData) => {
+  const pushResultToLeaderboards = async ({ id, coins, totalCost, permalink, subReddit, title }: CoinData) => {
     await createAwardItLeaderBoardEntry(id, coins,
       totalCost, permalink, subReddit, title)
       .then((res) => {
@@ -234,13 +253,25 @@ export default function App() {
             data={data}
           />
 
-          <LeaderBoard
-            posts={leaderBoardData}
-            showingLeaderBoard={displayingLeaderBoard}
-          />
-
+          {
+            displayingLeaderBoard ?
+              <Slide direction="up" in={displayingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
+                <div>
+                  <LeaderBoard
+                    posts={currentPageData}
+                  />
+                  <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <Pagination 
+                      page={currentPage} 
+                      count={pageCount} 
+                      defaultPage={1}
+                      onChange={handlePageChange}
+                      variant="outlined" />
+                  </div>
+                </div>
+              </Slide> : null
+          }
         </div>
-
       </Grid>
     </Container >
   );

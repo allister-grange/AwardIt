@@ -1,10 +1,9 @@
 import React from 'react';
-import { Avatar, Box, createStyles, Fade, Grid, Link, makeStyles, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
+import { Avatar, Box, createStyles, Fade, Grid, Link, makeStyles, Paper, Theme, Tooltip, Typography } from '@material-ui/core';
 import { CoinData } from '../types';
 
 type LeaderBoardProps = {
     posts: CoinData[],
-    showingLeaderBoard: boolean
 }
 
 type LeaderBoardSegmentProps = {
@@ -46,12 +45,11 @@ const LeaderBoardSegment = (props: LeaderBoardSegmentProps) => {
     )
 }
 
-export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardProps) {
+export default function LeaderBoard({ posts }: LeaderBoardProps) {
 
     const classes = useStyles();
 
     return (
-        <Slide direction="up" in={showingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
             <div className={classes.root}>
                 {
                     posts.slice(0, 9).map((leaderBoardEntry, idx) => {
@@ -103,6 +101,5 @@ export default function LeaderBoard({ posts, showingLeaderBoard }: LeaderBoardPr
                     })
                 }
             </div>
-        </Slide >
     );
 }
