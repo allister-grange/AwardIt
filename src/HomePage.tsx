@@ -66,7 +66,7 @@ export default function App() {
   const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState([] as LeaderBoardData[]);
-  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(false);
+  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
@@ -163,6 +163,7 @@ export default function App() {
         console.log(result);
         await pushResultToLeaderboards(result);
         await getLeaderBoardEntries(result.id);
+        setDisplayingLeaderBoard(true);
       })
       .catch(err => {
         setData(new CoinData({
@@ -207,6 +208,7 @@ export default function App() {
                 isSearching={isSearching} />
             </Grid>
 
+            {/* todo put switches into a component */}
             <Grid item xs>
               <div style={{
                 display: 'flex', flexDirection: 'row',
@@ -223,12 +225,11 @@ export default function App() {
                 justifyContent: 'center', alignItems: 'center'
               }}>
                 <p>show coins</p>
-                <Switch 
-                checked={displayingCoins}
-                onChange={() => {
-                  setDisplayingCoins(!displayingCoins);
-                }} />
-                {/* todo if the above is toggled, then change text to 'hide leaderboard */}
+                <Switch
+                  checked={displayingCoins}
+                  onChange={() => {
+                    setDisplayingCoins(!displayingCoins);
+                  }} />
               </div>
             </Grid>
             <Grid item xs>
@@ -237,10 +238,11 @@ export default function App() {
                 justifyContent: 'center', alignItems: 'center'
               }}>
                 <p>show leader board</p>
-                <Switch onChange={() => {
-                  setDisplayingLeaderBoard(!displayingLeaderBoard);
-                }} />
-                {/* todo if the above is toggled, then change text to 'hide leaderboard */}
+                <Switch
+                  checked={displayingLeaderBoard}
+                  onChange={() => {
+                    setDisplayingLeaderBoard(!displayingLeaderBoard);
+                  }} />
               </div>
             </Grid>
           </Grid>
@@ -249,12 +251,13 @@ export default function App() {
         <div className={classes.awardsGrid}>
           {
             displayingCoins ?
-            <AwardsDisplay
-              hasSearched={hasSearched}
-              data={data}
-              setDisplayingCoins={setDisplayingCoins}
-            />
-            : null
+              <AwardsDisplay
+                hasSearched={hasSearched}
+                data={data}
+                displayingLeaderBoard={displayingLeaderBoard}
+                setDisplayingCoins={setDisplayingCoins}
+              />
+              : null
           }
 
           <SearchResponses

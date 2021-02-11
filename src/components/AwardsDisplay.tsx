@@ -3,26 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, createStyles, Fade, Grid, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
 import { CoinData } from '../types';
 
-const useOutlinedInputStyles = makeStyles(theme => ({
-    root: {
-        "& $notchedOutline": {
-            borderColor: "grey"
-        },
-        "&:hover $notchedOutline": {
-            borderColor: "coral",
-        },
-        "&$focused $notchedOutline": {
-            borderColor: "coral"
-        }
-    },
-    focused: {},
-    notchedOutline: {}
-}));
-
 type AwardsDisplayPropTypes = {
     hasSearched: boolean,
     setDisplayingCoins: React.Dispatch<React.SetStateAction<boolean>>,
     data: CoinData,
+    displayingLeaderBoard: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,11 +48,11 @@ const roundToTwoDp = (input: number) => {
     return Math.round((input + Number.EPSILON) * 100) / 100
 }
 
-export default function AwardsDisplay({ hasSearched, setDisplayingCoins, data }: AwardsDisplayPropTypes) {
+export default function AwardsDisplay({ hasSearched, setDisplayingCoins, data, displayingLeaderBoard }: AwardsDisplayPropTypes) {
     const classes = useStyles();
 
     return (
-        <Slide direction="up" in={hasSearched} timeout={1000}
+        <Slide direction={displayingLeaderBoard ? "right" : "up"} in={hasSearched} timeout={1000}
             onEntered={() => setDisplayingCoins(true)} onExiting={() => setDisplayingCoins(false)}
             mountOnEnter unmountOnExit>
             <div>
