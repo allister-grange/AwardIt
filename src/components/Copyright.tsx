@@ -26,13 +26,6 @@ export default function Copyright() {
   
     return (
         <Typography className='footer' variant="body2" color="textSecondary" align="center">
-          {/* {'Copyright © '}
-          <Link color="inherit" href="https://material-ui.com/">
-            Allister Grange
-          </Link>{' '}
-          {new Date().getFullYear()}
-          {'.'}
-          <br /> */}
           {'using estimates from the cheapest and most expensive bundles found on '}
           <Link color="secondary" href="https://www.reddit.com/coins/">
               {'reddit'}
