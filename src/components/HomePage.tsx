@@ -3,15 +3,16 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import SearchBar from './components/SearchBar';
+import SearchBar from './SearchBar';
 import { Switch } from '@material-ui/core';
 
-import AwardsDisplay from './components/AwardsDisplay';
-import Header from './components/Header';
-import SearchResponses from './components/SearchResponses';
-import { createAwardItLeaderBoardEntry, getAwardCountForId, getAwardItLeaderBoardEntries } from './services/lambda';
-import { Coin, CoinData, LeaderBoardData } from './types';
-import LeaderBoard from './components/LeaderBoard';
+import AwardsDisplay from './AwardsDisplay';
+import Header from './Header';
+import SearchResponses from './SearchResponses';
+import { createAwardItLeaderBoardEntry, getAwardCountForId, getAwardItLeaderBoardEntries } from '../services/lambda';
+import { Coin, CoinData, LeaderBoardData } from '../types';
+import LeaderBoard from './LeaderBoard';
+import DisplaySwitches from './DisplaySwitches';
 
 require('dotenv').config()
 
@@ -208,43 +209,14 @@ export default function App() {
                 isSearching={isSearching} />
             </Grid>
 
-            {/* todo put switches into a component */}
-            <Grid item xs>
-              <div style={{
-                display: 'flex', flexDirection: 'row',
-                justifyContent: 'center', alignItems: 'center'
-              }}>
-                <p>post</p>
-                <Switch onChange={toggleChecked} />
-                <p>comment</p>
-              </div>
-            </Grid>
-            <Grid item xs>
-              <div style={{
-                display: 'flex', flexDirection: 'row',
-                justifyContent: 'center', alignItems: 'center'
-              }}>
-                <p>show coins</p>
-                <Switch
-                  checked={displayingCoins}
-                  onChange={() => {
-                    setDisplayingCoins(!displayingCoins);
-                  }} />
-              </div>
-            </Grid>
-            <Grid item xs>
-              <div style={{
-                display: 'flex', flexDirection: 'row',
-                justifyContent: 'center', alignItems: 'center'
-              }}>
-                <p>show leader board</p>
-                <Switch
-                  checked={displayingLeaderBoard}
-                  onChange={() => {
-                    setDisplayingLeaderBoard(!displayingLeaderBoard);
-                  }} />
-              </div>
-            </Grid>
+            <DisplaySwitches 
+              toggleChecked={toggleChecked}
+              displayingCoins={displayingCoins}
+              setDisplayingCoins={setDisplayingCoins}
+              displayingLeaderBoard={displayingLeaderBoard}
+              setDisplayingLeaderBoard={setDisplayingLeaderBoard}
+            />
+
           </Grid>
         </div>
 

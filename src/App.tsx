@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Copyright from './components/Copyright';
-import HomePage from './HomePage'
+import HomePage from './components/HomePage'
 
 export default function App() {
 
