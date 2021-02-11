@@ -50,22 +50,6 @@ const LeaderBoardSegment = (props: LeaderBoardSegmentProps) => {
     )
 }
 
-const highestPossiblePrice = (apiPrice: any) => {
-    const lowestCoinRatio: number = 1.99 / 500;
-    let highestCostPrice = lowestCoinRatio * apiPrice;
-    return roundToTwoDp(highestCostPrice);
-}
-
-const lowestPossiblePrice = (apiPrice: any) => {
-    const highestCoinRatio: number = 99.99 / 40000;
-    let lowestCostPrice = highestCoinRatio * apiPrice;
-    return roundToTwoDp(lowestCostPrice);
-}
-
-const roundToTwoDp = (input: number) => {
-    return Math.round((input + Number.EPSILON) * 100) / 100
-}
-
 export default function LeaderBoard({ posts, currentPage, pageCount, handlePageChange, displayingLeaderBoard }: LeaderBoardProps) {
 
     const classes = useStyles();
@@ -84,7 +68,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                     posts.map((leaderBoardEntry, idx) => {
                         return (
                             <Paper elevation={2} key={idx}
-                                style={leaderBoardEntry.highlighted ? { backgroundColor: 'coral' } : {}} className={classes.paper}>
+                                style={leaderBoardEntry.highlighted ? { backgroundColor: '#ffd9b5' } : {}} className={classes.paper}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={1}>
                                         <LeaderBoardSegment message={`#${leaderBoardEntry.position}`} />
@@ -145,4 +129,20 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
             </div>
         </Slide>
     );
+}
+
+const highestPossiblePrice = (apiPrice: any) => {
+    const lowestCoinRatio: number = 1.99 / 500;
+    let highestCostPrice = lowestCoinRatio * apiPrice;
+    return roundToTwoDp(highestCostPrice);
+}
+
+const lowestPossiblePrice = (apiPrice: any) => {
+    const highestCoinRatio: number = 99.99 / 40000;
+    let lowestCostPrice = highestCoinRatio * apiPrice;
+    return roundToTwoDp(lowestCostPrice);
+}
+
+const roundToTwoDp = (input: number) => {
+    return Math.round((input + Number.EPSILON) * 100) / 100
 }
