@@ -50,6 +50,22 @@ const LeaderBoardSegment = (props: LeaderBoardSegmentProps) => {
     )
 }
 
+const highestPossiblePrice = (apiPrice: any) => {
+    const lowestCoinRatio: number = 1.99 / 500;
+    let highestCostPrice = lowestCoinRatio * apiPrice;
+    return roundToTwoDp(highestCostPrice);
+}
+
+const lowestPossiblePrice = (apiPrice: any) => {
+    const highestCoinRatio: number = 99.99 / 40000;
+    let lowestCostPrice = highestCoinRatio * apiPrice;
+    return roundToTwoDp(lowestCostPrice);
+}
+
+const roundToTwoDp = (input: number) => {
+    return Math.round((input + Number.EPSILON) * 100) / 100
+}
+
 export default function LeaderBoard({ posts, currentPage, pageCount, handlePageChange, displayingLeaderBoard }: LeaderBoardProps) {
 
     const classes = useStyles();
@@ -57,8 +73,9 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
     return (
         <Slide direction="up" in={displayingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
             <div className={classes.root}>
+                <div style={{paddingTop: '15px'}}></div>
                 <hr />
-                <div style={{display: 'flex', justifyContent: 'center', paddingTop: '15px'}}>
+                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '15px' }}>
                     <Typography variant="h5" gutterBottom>
                         leader board
                     </Typography>
@@ -107,6 +124,9 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                                         <LeaderBoardSegment message={leaderBoardEntry.totalCost.toString()} description={'points'} />
                                         <LeaderBoardSegment message={`r/${leaderBoardEntry.subReddit}`} description={'subreddit'} />
                                         <LeaderBoardSegment message={leaderBoardEntry.id} description={'id'} />
+                                        <LeaderBoardSegment
+                                            message={`$${lowestPossiblePrice(leaderBoardEntry.totalCost)} to $${highestPossiblePrice(leaderBoardEntry.totalCost)}`}
+                                            description={'estimated price'} />
                                     </Grid>
                                 </Grid>
                             </Paper>

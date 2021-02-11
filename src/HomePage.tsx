@@ -190,7 +190,7 @@ export default function App() {
         alignItems="center"
         justify="center">
 
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{paddingTop: '15px'}}>
           <Header />
         </Grid>
 
