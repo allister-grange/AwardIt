@@ -99,12 +99,6 @@ export default function App() {
 
   }, [data]);
 
-  useEffect(() => {
-    console.log(currentPageData);
-    console.log(currentPage);
-
-  }, [currentPage])
-
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
   };
