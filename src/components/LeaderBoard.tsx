@@ -76,7 +76,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                 <div style={{ paddingTop: '15px' }}></div>
                 <hr />
                 <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '15px' }}>
-                    <Typography variant="h5" gutterBottom>
+                    <Typography variant="h4" gutterBottom>
                         leader board
                     </Typography>
                 </div>

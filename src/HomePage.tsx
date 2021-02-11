@@ -76,7 +76,7 @@ export default function App() {
   const [url, setUrl] = React.useState('');
 
   // Pagination data
-  const PER_PAGE = 10;
+  const PER_PAGE = 5;
   const offset = (currentPage - 1) * PER_PAGE;
   const currentPageData = leaderBoardData
     .slice(offset, offset + PER_PAGE);
