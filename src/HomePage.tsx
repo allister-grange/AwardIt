@@ -4,14 +4,13 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import SearchBar from './components/SearchBar';
-import { Slide, Switch } from '@material-ui/core';
-import Pagination from '@material-ui/lab/Pagination';
+import { Switch } from '@material-ui/core';
 
 import AwardsDisplay from './components/AwardsDisplay';
 import Header from './components/Header';
 import SearchResponses from './components/SearchResponses';
 import { createAwardItLeaderBoardEntry, getAwardCountForId, getAwardItLeaderBoardEntries } from './services/lambda';
-import { Coin, CoinData } from './types';
+import { Coin, CoinData, LeaderBoardData } from './types';
 import LeaderBoard from './components/LeaderBoard';
 
 require('dotenv').config()
@@ -66,7 +65,7 @@ export default function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(false);
   const [postOrComment, setPostOrComment] = useState("post");
-  const [leaderBoardData, setLeaderBoardData] = useState([] as CoinData[]);
+  const [leaderBoardData, setLeaderBoardData] = useState([] as LeaderBoardData[]);
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
@@ -84,20 +83,24 @@ export default function App() {
   const pageCount = Math.ceil(leaderBoardData.length / PER_PAGE);
 
   useEffect(() => {
-    console.log("data changed!!");
+    getLeaderBoardEntries();
+  }, []);
 
-    // I have a race condition here between this and pushResultToLeaderBoards
+  const getLeaderBoardEntries = () => {
     getAwardItLeaderBoardEntries()
       .then(res => {
-        console.log(res);
 
         const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
-
+        
+        sortedLeaderBoardData.map((leaderboard, idx) => {
+          leaderboard.position = idx + 1
+          leaderboard.highlighted = false
+        });
+        
         setLeaderBoardData(sortedLeaderBoardData);
       })
       .catch(err => console.error(err))
-
-  }, [data]);
+  }
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
@@ -150,7 +153,7 @@ export default function App() {
         setHasSearched(true);
         console.log(result);
         await pushResultToLeaderboards(result);
-
+        await getLeaderBoardEntries();
       })
       .catch(err => {
         setData(new CoinData({

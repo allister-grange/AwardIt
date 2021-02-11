@@ -1,10 +1,10 @@
 import React from 'react';
 import { Avatar, Box, createStyles, Fade, Grid, Link, makeStyles, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
-import { CoinData } from '../types';
+import { LeaderBoardData } from '../types';
 import { Pagination } from '@material-ui/lab';
 
 type LeaderBoardProps = {
-    posts: CoinData[],
+    posts: LeaderBoardData[],
     currentPage: number,
     pageCount: number,
     handlePageChange: any,
@@ -63,7 +63,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                             <Paper key={idx} className={classes.paper}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={1}>
-                                        <LeaderBoardSegment message={`#${(idx + 1).toString()}`} />
+                                        <LeaderBoardSegment message={`#${leaderBoardEntry.position}`} />
                                     </Grid>
                                     <Grid item justify="center" container md={8} sm={8} xs={11} spacing={2}>
                                         <Grid item sm>

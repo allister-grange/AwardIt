@@ -16,6 +16,17 @@ export class CoinData {
     }
 }
 
+export class LeaderBoardData extends CoinData {
+    position: number;
+    highlighted: boolean;
+
+    constructor(results: any) {
+        super(results);
+        this.position = results.data.position;
+        this.highlighted = results.data.highlighted;
+    }
+}
+
 export class Coin {
     coin_price: number;
     count: number;

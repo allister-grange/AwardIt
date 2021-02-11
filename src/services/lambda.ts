@@ -1,6 +1,6 @@
 import { RestoreOutlined } from '@material-ui/icons';
 import axios from 'axios';
-import { Coin, CoinData } from '../types';
+import { Coin, CoinData, LeaderBoardData } from '../types';
 
 const redditAwardCountLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/RedditAwardCount';
 const createAwardItLeaderBoardEntryLambdaUrl = 'https://q8sjefj7s6.execute-api.ap-southeast-2.amazonaws.com/default/createRedditLeaderboardEntry';
@@ -15,7 +15,7 @@ export const createAwardItLeaderBoardEntry = async(id: string, coins: Coin[], to
     .catch(err => err);
 }
 
-export const getAwardItLeaderBoardEntries = async (): Promise<CoinData[]> => {
+export const getAwardItLeaderBoardEntries = async (): Promise<LeaderBoardData[]> => {
 
     return await axios.get(getAwardItLeaderBoardEntriesLambdaUrl)
     .then(res => res.data)
