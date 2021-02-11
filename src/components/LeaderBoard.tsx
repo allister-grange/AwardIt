@@ -60,7 +60,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                 {
                     posts.map((leaderBoardEntry, idx) => {
                         return (
-                            <Paper key={idx} className={classes.paper}>
+                            <Paper key={idx} style={leaderBoardEntry.highlighted ? {backgroundColor: 'coral'} : {}}className={classes.paper}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={1}>
                                         <LeaderBoardSegment message={`#${leaderBoardEntry.position}`} />

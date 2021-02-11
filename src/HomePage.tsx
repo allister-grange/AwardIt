@@ -86,15 +86,24 @@ export default function App() {
     getLeaderBoardEntries();
   }, []);
 
-  const getLeaderBoardEntries = () => {
+  const getLeaderBoardEntries = (id?: string) => {
     getAwardItLeaderBoardEntries()
       .then(res => {
 
         const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
         
         sortedLeaderBoardData.map((leaderboard, idx) => {
-          leaderboard.position = idx + 1
-          leaderboard.highlighted = false
+          leaderboard.position = idx + 1;
+          if(id === leaderboard.id){
+            leaderboard.highlighted = true;
+          }
+          else{
+            leaderboard.highlighted = false;
+          }
+          /* sets the current page to be where the post is in 
+          the leaderboard */
+          const page = Math.ceil(leaderboard.position / PER_PAGE);
+          setCurrentPage(page);
         });
         
         setLeaderBoardData(sortedLeaderBoardData);
@@ -153,7 +162,7 @@ export default function App() {
         setHasSearched(true);
         console.log(result);
         await pushResultToLeaderboards(result);
-        await getLeaderBoardEntries();
+        await getLeaderBoardEntries(result.id);
       })
       .catch(err => {
         setData(new CoinData({
