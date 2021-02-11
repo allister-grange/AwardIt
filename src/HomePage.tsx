@@ -237,16 +237,14 @@ export default function App() {
 
           {
             displayingLeaderBoard ?
-              <Slide direction="up" in={displayingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
-                <div>
-                  <LeaderBoard
-                    posts={currentPageData}
-                    currentPage={currentPage}
-                    pageCount={pageCount}
-                    handlePageChange={handlePageChange}
-                  />
-                </div>
-              </Slide> : null
+              <LeaderBoard
+                posts={currentPageData}
+                currentPage={currentPage}
+                pageCount={pageCount}
+                handlePageChange={handlePageChange}
+                displayingLeaderBoard={displayingLeaderBoard}
+              />
+              : null
           }
         </div>
       </Grid>
