@@ -73,7 +73,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
     return (
         <Slide direction="up" in={displayingLeaderBoard} timeout={1000} mountOnEnter unmountOnExit>
             <div className={classes.root}>
-                <div style={{paddingTop: '15px'}}></div>
+                <div style={{ paddingTop: '15px' }}></div>
                 <hr />
                 <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '15px' }}>
                     <Typography variant="h5" gutterBottom>
@@ -83,7 +83,8 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                 {
                     posts.map((leaderBoardEntry, idx) => {
                         return (
-                            <Paper key={idx} style={leaderBoardEntry.highlighted ? { backgroundColor: 'coral' } : {}} className={classes.paper}>
+                            <Paper elevation={2} key={idx}
+                                style={leaderBoardEntry.highlighted ? { backgroundColor: 'coral' } : {}} className={classes.paper}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={1}>
                                         <LeaderBoardSegment message={`#${leaderBoardEntry.position}`} />

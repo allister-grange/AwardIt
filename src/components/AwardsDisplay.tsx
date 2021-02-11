@@ -72,7 +72,7 @@ export default function AwardsDisplay({ hasSearched, setDisplayingCoins, data, d
                                         placement="top"
                                         aria-label="coin price"
                                         arrow >
-                                        <Paper className={classes.paper}>
+                                        <Paper elevation={3} className={classes.paper}>
                                             <Avatar alt={coin.name + ' icon'} src={coin.icon} />
                                             <Typography className={classes.awardCardText} variant="body1" gutterBottom>
                                                 {coin.count + 'x ' + coin.name}
