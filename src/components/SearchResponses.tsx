@@ -1,12 +1,13 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { CoinData } from '../types';
 
 type SearchResponsesProps = {
     errorOnSearch: boolean,
     noAwardsForPost: boolean,
     displayingCoins: boolean,
     postOrComment: string,
-    data: any
+    data: CoinData
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,22 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     })
 );
-
-const highestPossiblePrice = (apiPrice: any) => {
-    const lowestCoinRatio: number = 1.99 / 500;
-    let highestCostPrice = lowestCoinRatio * apiPrice;
-    return roundToTwoDp(highestCostPrice);
-}
-
-const lowestPossiblePrice = (apiPrice: any) => {
-    const highestCoinRatio: number = 99.99 / 40000;
-    let lowestCostPrice = highestCoinRatio * apiPrice;
-    return roundToTwoDp(lowestCostPrice);
-}
-
-const roundToTwoDp = (input: number) => {
-    return Math.round((input + Number.EPSILON) * 100) / 100
-}
 
 export default function SearchResponses({ errorOnSearch, noAwardsForPost, displayingCoins,
     postOrComment, data }: SearchResponsesProps) {
@@ -59,13 +44,6 @@ export default function SearchResponses({ errorOnSearch, noAwardsForPost, displa
                                 'no awards on that post :(' :
                                 'no awards on that comment :('
                         }
-                    </Typography> :
-                    null
-            }
-            {
-                displayingCoins ?
-                    <Typography align="center" variant="body1" gutterBottom className={classes.textPadding}>
-                        {'total estimated cost of coins is $' + lowestPossiblePrice(data.totalCost) + ' to $' + highestPossiblePrice(data.totalCost)}
                     </Typography> :
                     null
             }

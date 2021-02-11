@@ -63,7 +63,7 @@ export default function App() {
   const [errorOnSearch, setErrorOnSearch] = useState(false);
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [displayingCoins, setDisplayingCoins] = useState(false);
+  const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState([] as LeaderBoardData[]);
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(false);
@@ -91,21 +91,21 @@ export default function App() {
       .then(res => {
 
         const sortedLeaderBoardData = res.sort((a, b) => b.totalCost - a.totalCost);
-        
+
         sortedLeaderBoardData.map((leaderboard, idx) => {
           leaderboard.position = idx + 1;
-          if(id === leaderboard.id){
+          if (id === leaderboard.id) {
             /* sets the current page to be where the post is in 
             the leaderboard, and highlights the entry */
             const page = Math.ceil(leaderboard.position / PER_PAGE);
             leaderboard.highlighted = true;
             setCurrentPage(page);
           }
-          else{
+          else {
             leaderboard.highlighted = false;
           }
         });
-        
+
         setLeaderBoardData(sortedLeaderBoardData);
       })
       .catch(err => console.error(err))
@@ -222,6 +222,20 @@ export default function App() {
                 display: 'flex', flexDirection: 'row',
                 justifyContent: 'center', alignItems: 'center'
               }}>
+                <p>show coins</p>
+                <Switch 
+                checked={displayingCoins}
+                onChange={() => {
+                  setDisplayingCoins(!displayingCoins);
+                }} />
+                {/* todo if the above is toggled, then change text to 'hide leaderboard */}
+              </div>
+            </Grid>
+            <Grid item xs>
+              <div style={{
+                display: 'flex', flexDirection: 'row',
+                justifyContent: 'center', alignItems: 'center'
+              }}>
                 <p>show leader board</p>
                 <Switch onChange={() => {
                   setDisplayingLeaderBoard(!displayingLeaderBoard);
@@ -233,11 +247,15 @@ export default function App() {
         </div>
 
         <div className={classes.awardsGrid}>
-          <AwardsDisplay
-            hasSearched={hasSearched}
-            data={data}
-            setDisplayingCoins={setDisplayingCoins}
-          />
+          {
+            displayingCoins ?
+            <AwardsDisplay
+              hasSearched={hasSearched}
+              data={data}
+              setDisplayingCoins={setDisplayingCoins}
+            />
+            : null
+          }
 
           <SearchResponses
             errorOnSearch={errorOnSearch}
