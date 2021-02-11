@@ -95,15 +95,15 @@ export default function App() {
         sortedLeaderBoardData.map((leaderboard, idx) => {
           leaderboard.position = idx + 1;
           if(id === leaderboard.id){
+            /* sets the current page to be where the post is in 
+            the leaderboard, and highlights the entry */
+            const page = Math.ceil(leaderboard.position / PER_PAGE);
             leaderboard.highlighted = true;
+            setCurrentPage(page);
           }
           else{
             leaderboard.highlighted = false;
           }
-          /* sets the current page to be where the post is in 
-          the leaderboard */
-          const page = Math.ceil(leaderboard.position / PER_PAGE);
-          setCurrentPage(page);
         });
         
         setLeaderBoardData(sortedLeaderBoardData);
