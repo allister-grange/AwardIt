@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { createStyles, Grid, Theme } from '@material-ui/core';
+import { createStyles, Grid, Switch, Theme } from '@material-ui/core';
 import { CoinData } from '../types';
 
 type DisplaySwitchesPropTypes = {
@@ -16,7 +16,7 @@ export default function DisplaySwitches({ toggleChecked, displayingCoins,
 
     return (
         <>
-            <Grid item xs>
+            <Grid item sm={4} xs={6}>
                 <div style={{
                     display: 'flex', flexDirection: 'row',
                     justifyContent: 'center', alignItems: 'center'
@@ -26,7 +26,7 @@ export default function DisplaySwitches({ toggleChecked, displayingCoins,
                     <p>comment</p>
                 </div>
             </Grid>
-            <Grid item xs>
+            <Grid item sm={4} xs={6}>
                 <div style={{
                     display: 'flex', flexDirection: 'row',
                     justifyContent: 'center', alignItems: 'center'
@@ -39,7 +39,7 @@ export default function DisplaySwitches({ toggleChecked, displayingCoins,
                         }} />
                 </div>
             </Grid>
-            <Grid item xs>
+            <Grid item sm={4} xs={6}>
                 <div style={{
                     display: 'flex', flexDirection: 'row',
                     justifyContent: 'center', alignItems: 'center'
