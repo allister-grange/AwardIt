@@ -1,7 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { createStyles, Grid, Switch, Theme } from '@material-ui/core';
-import { CoinData } from '../types';
+import { Grid, Switch } from '@material-ui/core';
 
 type DisplaySwitchesPropTypes = {
     toggleChecked: () => void,
