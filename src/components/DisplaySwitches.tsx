@@ -37,7 +37,7 @@ export default function DisplaySwitches({ toggleChecked, displayingCoins,
                         }} />
                 </div>
             </Grid>
-            <Grid item sm={4} xs={6}>
+            <Grid item sm={4} xs={8}>
                 <div style={{
                     display: 'flex', flexDirection: 'row',
                     justifyContent: 'center', alignItems: 'center'
