@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     awardsGrid: {
       flexGrow: 1,
-      padding: '50px',
+      padding: '10px',
       paddingBottom: '0px',
       paddingTop: '25px',
       width: '100%'

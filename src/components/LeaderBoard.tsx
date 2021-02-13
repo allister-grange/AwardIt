@@ -19,7 +19,7 @@ type LeaderBoardSegmentProps = {
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            flexGrow: 1,
+            width: '100%',
         },
         textPadding: {
             paddingTop: '25px'
@@ -73,7 +73,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                                     <Grid item xs={1}>
                                         <LeaderBoardSegment message={`#${leaderBoardEntry.position}`} />
                                     </Grid>
-                                    <Grid item justify="center" container md={8} sm={8} xs={11} spacing={2}>
+                                    <Grid item justify="center" container md={8} sm={8} xs={10} spacing={2}>
                                         <Grid item sm>
                                             <div style={{ padding: 10 }}>
                                                 <Link href={leaderBoardEntry.permalink}

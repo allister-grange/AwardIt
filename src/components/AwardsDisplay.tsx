@@ -64,7 +64,7 @@ export default function AwardsDisplay({ hasSearched, setDisplayingCoins, data, d
                     {
                         data.coins?.map((coin, idx) => {
                             return (
-                                <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={6} md={3}>
+                                <Grid key={idx} item={true} lg={2} xl={2} xs={12} sm={4} md={3}>
                                     <Tooltip
                                         TransitionComponent={Fade}
                                         TransitionProps={{ timeout: 600 }}
