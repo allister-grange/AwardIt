@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Copyright from './components/Copyright';
+import Footer from './components/Footer';
 import HomePage from './components/HomePage'
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
           <HomePage />
         </div>
         <div style={{ padding: '20px' }}>
-          <Copyright />
+          <Footer />
         </div>
       </div>
     </div>
