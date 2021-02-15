@@ -68,6 +68,7 @@ export default function App() {
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState([] as LeaderBoardData[]);
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
+  const [loadingLeaderBoard, setLoadingLeaderBoard] = useState(false);
   const [data, setData] = useState(new CoinData({
     data: {
       coins: undefined,
@@ -88,6 +89,7 @@ export default function App() {
   }, []);
 
   const getLeaderBoardEntries = (id?: string) => {
+    setLoadingLeaderBoard(true);
     getAwardItLeaderBoardEntries()
       .then(res => {
 
@@ -108,6 +110,7 @@ export default function App() {
         });
 
         setLeaderBoardData(sortedLeaderBoardData);
+        setLoadingLeaderBoard(false);
       })
       .catch(err => console.error(err))
   }
@@ -248,9 +251,11 @@ export default function App() {
                 pageCount={pageCount}
                 handlePageChange={handlePageChange}
                 displayingLeaderBoard={displayingLeaderBoard}
+                loadingLeaderBoard={loadingLeaderBoard}
               />
               : null
           }
+
         </div>
       </Grid>
     </Container >
