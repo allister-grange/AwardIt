@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 
 export default function Header() {
-
     return (
         <Grid container justify="center">
             <Grid container direction="row" justify="center">

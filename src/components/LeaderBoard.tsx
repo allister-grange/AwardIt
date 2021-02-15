@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, Box, CircularProgress, createStyles, Fade, Grid, LinearProgress, Link, makeStyles, Paper, Slide, Theme, Tooltip, Typography } from '@material-ui/core';
 import { LeaderBoardData } from '../types';
 import { Pagination } from '@material-ui/lab';
+import IconGrid from './IconGrid';
 
 type LeaderBoardProps = {
   posts: LeaderBoardData[],
@@ -95,26 +96,7 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
                       </div>
                     </Grid >
                     <Grid container justify="center" direction="row">
-                      {
-                        leaderBoardEntry.coins?.map((coin, idx) => (
-                          <Tooltip
-                            key={idx}
-                            style={{ cursor: 'pointer' }}
-                            TransitionComponent={Fade}
-                            TransitionProps={{ timeout: 600 }}
-                            title={(coin.coin_price * coin.count) + " coins"}
-                            placement="top"
-                            aria-label="coin price"
-                            arrow >
-                            <div style={{ display: 'flex', flexDirection: 'row', paddingRight: '13px' }}>
-                              <Typography variant="body1" gutterBottom>
-                                {coin.count + 'x '}
-                              </Typography>
-                              <Avatar style={{ height: '20px', width: '20px' }} sizes='sm' alt={coin.name + ' icon'} src={coin.icon} />
-                            </div>
-                          </Tooltip>
-                        ))
-                      }
+                      <IconGrid leaderBoardEntry={leaderBoardEntry} />
                     </Grid>
                   </Grid>
                   <Grid container md={3} sm={3} xs={12} justify="center" direction="row">
