@@ -1,4 +1,4 @@
-# [AwardIt](awardit.info)
+# [AwardIt](https://awardit.info)
 
 <p align="center">
     <kbd>
