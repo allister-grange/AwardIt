@@ -1,4 +1,4 @@
-# (Awardit)[awardit.info]
+# [AwardIt](awardit.info)
 
 <p align="center">
     <kbd>
@@ -96,7 +96,3 @@ The backend is served from a lambda function in AWS, I would recommend changing 
     total_cost: 12725
 }
 ```
-
-## How to sync my local build with the bucket 
-
-aws s3 sync build/ s3://awardit.info
