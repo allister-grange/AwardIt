@@ -6,6 +6,12 @@
     </kbd>
 </p>
 
+## Tech
+
+The site is built using React with Typescript. This front end is hosted on an AWS S3 bucket, behind a CloudFront distribution.
+
+The backend is a Python Lambda function in AWS that queries [Reddit's API](https://www.reddit.com/dev/api/), behind an API Gateway instance
+
 ## Motivation
 
 This application was built due to numerous requests of users on the r/theydidthemath subreddit wanting to see how much the awards on various posts cost.
@@ -13,12 +19,6 @@ This application was built due to numerous requests of users on the r/theydidthe
 Instead of building a boring calculator, I wanted to build something aesthetic that provided a visual answer. 
 
 So, here is AwardIt!
-
-## Tech
-
-This is build using React with Typescript, with a Python backend to query reddit's API for the information on a post. 
-
-The front end is hosted on an AWS S3 bucket, and the query to reddit's API is sitting in a lambda serverless function. 
 
 ## Hosting locally 
 
