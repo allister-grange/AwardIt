@@ -15,7 +15,7 @@ export default function IconGrid({ leaderBoardEntry }: DisplaySwitchesPropTypes)
       {
         leaderBoardEntry.coins?.map((coin, idx) => {
 
-          if (idx < 40 || showingAllCoins) {
+          if (idx < 30 || showingAllCoins) {
             return (
               <Tooltip
                 key={idx}
@@ -35,7 +35,7 @@ export default function IconGrid({ leaderBoardEntry }: DisplaySwitchesPropTypes)
               </Tooltip>
             )
           }
-          else if (idx === 40 && !showingAllCoins) {
+          else if (idx === 30 && !showingAllCoins) {
             return (
               <div onClick={() => setShowingAllCoins(true)} 
                 style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', cursor: 'pointer' }}>
