@@ -239,6 +239,7 @@ export default function App() {
                 onSearchClick={onSearchClick}
                 handleChange={handleChange}
                 isSearching={isSearching}
+                placeholder={postOrComment}
               />
             </Grid>
 

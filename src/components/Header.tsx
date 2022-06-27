@@ -9,7 +9,7 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "100px", width: "100px" }}
+          style={{ height: "75px", width: "75px" }}
         />
         <Typography
           align="center"
@@ -17,8 +17,8 @@ export default function Header() {
           component="h4"
           style={{
             paddingTop: "25px",
-            fontSize: "60px",
-            fontWeight: 200,
+            fontSize: "70px",
+            fontWeight: 300,
             letterSpacing: "2px",
           }}
           gutterBottom
@@ -29,10 +29,16 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "100px", width: "100px" }}
+          style={{ height: "75px", width: "75px" }}
         />
       </Grid>
-      <Typography align="center" variant="h5" component="h1" gutterBottom>
+      <Typography
+        align="center"
+        variant="h5"
+        component="h1"
+        style={{ marginBottom: "25px" }}
+        gutterBottom
+      >
         calculate the cost of awards on a reddit post
       </Typography>
     </Grid>

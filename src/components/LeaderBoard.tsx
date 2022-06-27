@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignContent: 'center',
-      paddingBottom: '10px'
+      paddingBottom: '15px',
+      paddingTop: '10px',
     }
   })
 );
@@ -68,11 +69,6 @@ export default function LeaderBoard({ posts, currentPage, pageCount, handlePageC
       <div className={classes.root}>
         <div style={{ paddingTop: '15px' }}></div>
         <hr />
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '15px' }}>
-          <Typography variant="h4" gutterBottom>
-            leader board
-                    </Typography>
-        </div>
         {loadingLeaderBoard ?
           <div className={classes.loadingIndicator}>
             <CircularProgress color="secondary" />
