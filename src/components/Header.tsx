@@ -1,7 +1,9 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, useMediaQuery } from "@material-ui/core";
 
 export default function Header() {
+  const matches = useMediaQuery("(max-width:600px)");
+
   return (
     <Grid container justify="center">
       <Grid container direction="row" justify="center" alignItems="center">
@@ -9,7 +11,7 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "75px", width: "75px" }}
+          style={{ height: "65px", width: "65px" }}
         />
         <Typography
           align="center"
@@ -17,8 +19,8 @@ export default function Header() {
           component="h4"
           style={{
             paddingTop: "25px",
-            fontSize: "70px",
-            fontWeight: 300,
+            fontSize: matches ? "50px" : "70px",
+            fontWeight: 400,
             letterSpacing: "2px",
           }}
           gutterBottom
@@ -29,7 +31,7 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "75px", width: "75px" }}
+          style={{ height: "65px", width: "65px" }}
         />
       </Grid>
       <Typography
