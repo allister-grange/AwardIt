@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Typography, useMediaQuery } from "@material-ui/core";
 
 export default function Header() {
-  const matches = useMediaQuery("(max-width:600px)");
+  const isOnMobile = useMediaQuery("(max-width:600px)");
 
   return (
     <Grid container justify="center">
@@ -11,15 +11,18 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "65px", width: "65px" }}
+          style={{
+            height: isOnMobile ? "50px" : "75px",
+            width: isOnMobile ? "50px" : "75px",
+          }}
         />
         <Typography
           align="center"
-          variant="h4"
-          component="h4"
+          variant="h2"
+          component="h1"
           style={{
-            paddingTop: "25px",
-            fontSize: matches ? "50px" : "70px",
+            paddingTop: isOnMobile ? "15px" : "25px",
+            fontSize: isOnMobile ? "40px" : "70px",
             fontWeight: 400,
             letterSpacing: "2px",
           }}
@@ -31,13 +34,16 @@ export default function Header() {
           className="img-responsive"
           src={"trophy.png"}
           alt="logo"
-          style={{ height: "65px", width: "65px" }}
+          style={{
+            height: isOnMobile ? "50px" : "75px",
+            width: isOnMobile ? "50px" : "75px",
+          }}
         />
       </Grid>
       <Typography
         align="center"
-        variant="h5"
-        component="h1"
+        component="h2"
+        variant="h6"
         style={{ marginBottom: "25px" }}
         gutterBottom
       >
