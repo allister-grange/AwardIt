@@ -1,15 +1,18 @@
 import json
 from botocore.vendored import requests
+from urllib.parse import unquote
 
 # if the url is ill formatted just find the 6 character string and return in
+
+
 def find_id_from_url(url, post_or_comment):
 
     splitUrl = url.split('/')
- 
+
     for sequence in reversed(splitUrl):
-        if(len(sequence) == 6 and sequence != 'https:' and post_or_comment == 'post'):
+        if (len(sequence) == 6 and sequence != 'https:' and post_or_comment == 'post'):
             return sequence
-        elif(len(sequence) == 7 and post_or_comment == 'comment'):
+        elif (len(sequence) == 7 and post_or_comment == 'comment'):
             return sequence
 
     # throw an error here
@@ -28,7 +31,8 @@ def format_awards_response(awards, permalink, id, sub_reddit, title):
         formatted_award['name'] = name
         formatted_award['coin_price'] = award['coin_price']
         formatted_award['count'] = award['count']
-        formatted_award['icon'] = award['icon_url']
+        formatted_award['icon'] = unquote(
+            award['resized_icons'][2]['url']).replace('&amp;', '&')
         totalCost += int(award['coin_price']) * int(award['count'])
 
         res['coins'][name] = formatted_award
@@ -47,11 +51,11 @@ def reddit_api_get_request(id, is_post):
     user_agent = 'AwardsEstimator by allig256'
     headers = {'User-Agent': user_agent}
 
-    if(is_post):
+    if (is_post):
         print("Getting a post's awards")
         reddit_base_url = 'https://www.reddit.com/api/info.json?id=t3_'
     else:
-        print("Getting a comments's awards")
+        print("Getting a comment's awards")
         reddit_base_url = 'https://www.reddit.com/api/info.json?id=t1_'
 
     res = requests.get(reddit_base_url + id, headers=headers)
@@ -63,28 +67,28 @@ def reddit_api_get_request(id, is_post):
 def lambda_handler(event, context):
 
     print(event['queryStringParameters'])
-    
+
     url = event['queryStringParameters']['url']
     post_or_comment = event['queryStringParameters']['post-or-comment']
-    
+
     print("post or comment = " + post_or_comment)
 
     # if the url is a nice copy/paste from the browser it should be easy to get the id
 
     id = find_id_from_url(url, post_or_comment)
-    
+
     print("parsed id from url is " + id)
 
-    if(id is None or (len(id) != 6 and len(id) != 7)):
+    if (id is None or (len(id) != 6 and len(id) != 7)):
         raise ValueError(
             'The parsed ID was not in the correct format. Id = ' + id)
 
     res = None
 
-    if(len(id) == 6 and post_or_comment == "post"):
+    if (len(id) == 6 and post_or_comment == "post"):
         # make a url request
         res = reddit_api_get_request(id, True)
-    elif(len(id) == 7 and post_or_comment == "comment"):
+    elif (len(id) == 7 and post_or_comment == "comment"):
         # make a comment reqest
         res = reddit_api_get_request(id, False)
 
@@ -95,10 +99,15 @@ def lambda_handler(event, context):
 
     awards = data['data']['children'][0]['data']['all_awardings']
     sub_reddit = data['data']['children'][0]['data']['subreddit']
-    permalink = 'https://www.reddit.com' + data['data']['children'][0]['data']['permalink']
-    title = 'https://www.reddit.com' + data['data']['children'][0]['data']['title']
+    permalink = 'https://www.reddit.com' + \
+        data['data']['children'][0]['data']['permalink']
+    if (post_or_comment == "post"):
+        title = data['data']['children'][0]['data']['title']
+    elif (post_or_comment == "comment"):
+        title = data['data']['children'][0]['data']['body']
 
-    awards_res = format_awards_response(awards, permalink, id, sub_reddit, title)
+    awards_res = format_awards_response(
+        awards, permalink, id, sub_reddit, title)
 
     print(awards_res)
 
