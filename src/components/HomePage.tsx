@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import SearchBar from "./SearchBar";
-import { Switch } from "@material-ui/core";
-
-import AwardsDisplay from "./AwardsDisplay";
-import Header from "./Header";
-import SearchResponses from "./SearchResponses";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
 import {
   createAwardItLeaderBoardEntry,
   getAwardCountForId,
   getAwardItLeaderBoardEntries,
-} from "../services/lambda";
-import { Coin, CoinData, LeaderBoardData } from "../types";
-import LeaderBoard from "./LeaderBoard";
+} from "../services/posts";
+import { RedditPost, LeaderBoardData } from "../types";
+import AwardsDisplay from "./AwardsDisplay";
 import DisplaySwitches from "./DisplaySwitches";
+import Header from "./Header";
+import LeaderBoard from "./LeaderBoard";
+import SearchBar from "./SearchBar";
+import SearchResponses from "./SearchResponses";
+import useRedditPostData from "../hooks/useRedditPostData";
 
 require("dotenv").config();
 
@@ -73,52 +71,47 @@ export default function App() {
   );
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [loadingLeaderBoard, setLoadingLeaderBoard] = useState(false);
-  const [data, setData] = useState(
-    new CoinData({
-      data: {
-        coins: undefined,
-        total_cost: 0,
-      },
-    })
-  );
+  const [data, setData] = useState<RedditPost | undefined>();
   const [url, setUrl] = React.useState("");
+  const { state, fetchPosts } = useRedditPostData("http://localhost:3001");
 
   // Pagination data
   const PER_PAGE = 5;
   const offset = (currentPage - 1) * PER_PAGE;
-  const currentPageData = leaderBoardData.slice(offset, offset + PER_PAGE);
+  // const currentPageData = leaderBoardData.slice(offset, offset + PER_PAGE);
   const pageCount = Math.ceil(leaderBoardData.length / PER_PAGE);
 
   useEffect(() => {
-    getLeaderBoardEntries();
+    // getLeaderBoardEntries();
+    fetchPosts();
   }, []);
 
-  const getLeaderBoardEntries = (id?: string) => {
-    setLoadingLeaderBoard(true);
-    getAwardItLeaderBoardEntries()
-      .then((res) => {
-        const sortedLeaderBoardData = res.sort(
-          (a, b) => b.totalCost - a.totalCost
-        );
+  // const getLeaderBoardEntries = (id?: string) => {
+  //   setLoadingLeaderBoard(true);
+  //   getAwardItLeaderBoardEntries()
+  //     .then((res) => {
+  //       const sortedLeaderBoardData = res.sort(
+  //         (a, b) => b.totalCost - a.totalCost
+  //       );
 
-        sortedLeaderBoardData.map((leaderboard, idx) => {
-          leaderboard.position = idx + 1;
-          if (id === leaderboard.id) {
-            /* sets the current page to be where the post is in 
-            the leaderboard, and highlights the entry */
-            const page = Math.ceil(leaderboard.position / PER_PAGE);
-            leaderboard.highlighted = true;
-            setCurrentPage(page);
-          } else {
-            leaderboard.highlighted = false;
-          }
-        });
+  //       sortedLeaderBoardData.map((leaderboard, idx) => {
+  //         leaderboard.position = idx + 1;
+  //         if (id === leaderboard.id) {
+  //           /* sets the current page to be where the post is in
+  //           the leaderboard, and highlights the entry */
+  //           const page = Math.ceil(leaderboard.position / PER_PAGE);
+  //           leaderboard.highlighted = true;
+  //           setCurrentPage(page);
+  //         } else {
+  //           leaderboard.highlighted = false;
+  //         }
+  //       });
 
-        setLeaderBoardData(sortedLeaderBoardData);
-        setLoadingLeaderBoard(false);
-      })
-      .catch((err) => console.error(err));
-  };
+  //       setLeaderBoardData(sortedLeaderBoardData);
+  //       setLoadingLeaderBoard(false);
+  //     })
+  //     .catch((err) => console.error(err));
+  // };
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
@@ -146,7 +139,7 @@ export default function App() {
     permalink,
     subReddit,
     title,
-  }: CoinData) => {
+  }: RedditPost) => {
     await createAwardItLeaderBoardEntry(
       id,
       coins,
@@ -163,46 +156,35 @@ export default function App() {
       });
   };
 
-  const onSearchClick = () => {
-    if (url === "") return;
+  // const onSearchClick = () => {
+  //   if (url === "") return;
 
-    setIsSearching(true);
-    setNoAwardsForPost(false);
-    setErrorOnSearch(false);
+  //   setIsSearching(true);
+  //   setNoAwardsForPost(false);
+  //   setErrorOnSearch(false);
 
-    getAwardCountForId(url, postOrComment)
-      .then(async (result) => {
-        if (result.coins.length === 0) {
-          setDisplayingCoins(false);
-          setNoAwardsForPost(true);
-          return;
-        }
+  //   getAwardCountForId(url, postOrComment)
+  //     .then(async (result) => {
+  //       if (result.coins.length === 0) {
+  //         setDisplayingCoins(false);
+  //         setNoAwardsForPost(true);
+  //         return;
+  //       }
 
-        setData(result);
-        setHasSearched(true);
-        console.log(result);
-        await pushResultToLeaderboards(result);
-        await getLeaderBoardEntries(result.id);
-        setDisplayingLeaderBoard(true);
-      })
-      .catch((err) => {
-        setData(
-          new CoinData({
-            data: {
-              coins: undefined,
-              total_cost: 0,
-              permalink: undefined,
-              id: undefined,
-            },
-          })
-        );
-        setErrorOnSearch(true);
-        setDisplayingCoins(false);
-      })
-      .finally(() => {
-        setIsSearching(false);
-      });
-  };
+  //       setData(result);
+  //       setHasSearched(true);
+  //       await pushResultToLeaderboards(result);
+  //       await getLeaderBoardEntries(result.id);
+  //       setDisplayingLeaderBoard(true);
+  //     })
+  //     .catch((err) => {
+  //       setErrorOnSearch(true);
+  //       setDisplayingCoins(false);
+  //     })
+  //     .finally(() => {
+  //       setIsSearching(false);
+  //     });
+  // };
 
   return (
     <Container maxWidth="xl">
@@ -236,9 +218,9 @@ export default function App() {
             <Grid item xs={12}>
               <SearchBar
                 value={url}
-                onSearchClick={onSearchClick}
+                // onSearchClick={onSearchClick}
                 handleChange={handleChange}
-                isSearching={isSearching}
+                isSearching={state.isLoading}
                 placeholder={postOrComment}
               />
             </Grid>
@@ -253,35 +235,38 @@ export default function App() {
           </Grid>
         </div>
 
-        <div className={classes.awardsGrid}>
-          {displayingCoins ? (
-            <AwardsDisplay
-              hasSearched={hasSearched}
-              data={data}
-              displayingLeaderBoard={displayingLeaderBoard}
-              setDisplayingCoins={setDisplayingCoins}
-            />
-          ) : null}
+        {state.data?.posts ? (
+          <div className={classes.awardsGrid}>
+            {displayingCoins ? (
+              <AwardsDisplay
+                hasSearched={hasSearched}
+                data={state.data?.posts[0]}
+                displayingLeaderBoard={displayingLeaderBoard}
+                setDisplayingCoins={setDisplayingCoins}
+              />
+            ) : null}
 
-          <SearchResponses
-            errorOnSearch={errorOnSearch}
-            noAwardsForPost={noAwardsForPost}
-            displayingCoins={displayingCoins}
-            postOrComment={postOrComment}
-            data={data}
-          />
-
-          {displayingLeaderBoard ? (
-            <LeaderBoard
-              posts={currentPageData}
-              currentPage={currentPage}
-              pageCount={pageCount}
-              handlePageChange={handlePageChange}
-              displayingLeaderBoard={displayingLeaderBoard}
-              loadingLeaderBoard={loadingLeaderBoard}
+            <SearchResponses
+              errorOnSearch={errorOnSearch}
+              noAwardsForPost={noAwardsForPost}
+              displayingCoins={displayingCoins}
+              postOrComment={postOrComment}
             />
-          ) : null}
-        </div>
+
+            {displayingLeaderBoard ? (
+              <LeaderBoard
+                posts={state.data?.posts}
+                currentPage={currentPage}
+                pageCount={pageCount}
+                handlePageChange={handlePageChange}
+                displayingLeaderBoard={displayingLeaderBoard}
+                loadingLeaderBoard={loadingLeaderBoard}
+              />
+            ) : null}
+          </div>
+        ) : (
+          <></>
+        )}
       </Grid>
     </Container>
   );

@@ -2,3 +2,5 @@
 /tempServer
 .env
 /build
+api/node_modules/
+vscode/
