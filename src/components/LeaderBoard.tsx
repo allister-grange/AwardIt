@@ -68,8 +68,6 @@ export default function LeaderBoard({
 }: LeaderBoardProps) {
   const classes = useStyles();
 
-  console.log(currentPage, pageCount);
-
   return (
     <Slide
       direction="up"
@@ -95,9 +93,9 @@ export default function LeaderBoard({
             >
               <Grid container spacing={1}>
                 <Grid item xs={1}>
-                  {/* <LeaderBoardSegment
-                      message={`#${leaderBoardEntry.position}`}
-                    /> */}
+                  <LeaderBoardSegment
+                    message={`#${idx + (currentPage - 1) * 10 + 1}`}
+                  />
                 </Grid>
                 <Grid
                   item
