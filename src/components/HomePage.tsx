@@ -15,6 +15,7 @@ import LeaderBoard from "./LeaderBoard";
 import SearchBar from "./SearchBar";
 import SearchResponses from "./SearchResponses";
 import useRedditPostData from "../hooks/useRedditPostData";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 require("dotenv").config();
 
@@ -53,6 +54,13 @@ const useStyles = makeStyles((theme: Theme) =>
     raisedSearchBar: {
       width: "100%",
     },
+    loadingIndicator: {
+      display: "flex",
+      justifyContent: "center",
+      alignContent: "center",
+      paddingBottom: "15px",
+      paddingTop: "10px",
+    },
   })
 );
 
@@ -63,7 +71,6 @@ export default function App() {
   const [hasSearched, setHasSearched] = useState(false);
   const [errorOnSearch, setErrorOnSearch] = useState(false);
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
   const [leaderBoardData, setLeaderBoardData] = useState(
@@ -206,7 +213,6 @@ export default function App() {
         >
           <Header />
         </Grid>
-
         <div
           className={
             hasSearched || displayingLeaderBoard
@@ -235,38 +241,41 @@ export default function App() {
           </Grid>
         </div>
 
-        {state.data?.posts ? (
-          <div className={classes.awardsGrid}>
-            {displayingCoins ? (
-              <AwardsDisplay
-                hasSearched={hasSearched}
-                data={state.data?.posts[0]}
-                displayingLeaderBoard={displayingLeaderBoard}
-                setDisplayingCoins={setDisplayingCoins}
-              />
-            ) : null}
-
-            <SearchResponses
-              errorOnSearch={errorOnSearch}
-              noAwardsForPost={noAwardsForPost}
-              displayingCoins={displayingCoins}
-              postOrComment={postOrComment}
+        {/* WHAT DOES THIS DO?? */}
+        <div className={classes.awardsGrid}>
+          {displayingCoins ? (
+            <AwardsDisplay
+              hasSearched={hasSearched}
+              data={state.data?.posts[0]}
+              displayingLeaderBoard={displayingLeaderBoard}
+              setDisplayingCoins={setDisplayingCoins}
             />
+          ) : null}
 
-            {displayingLeaderBoard ? (
+          <SearchResponses
+            errorOnSearch={errorOnSearch}
+            noAwardsForPost={noAwardsForPost}
+            displayingCoins={displayingCoins}
+            postOrComment={postOrComment}
+          />
+
+          {/* TODO sort out this double query nonsense below */}
+          {displayingLeaderBoard && state.data?.posts ? (
+            state.isLoading ? (
+              <div className={classes.loadingIndicator}>
+                <CircularProgress color="secondary" />
+              </div>
+            ) : (
               <LeaderBoard
                 posts={state.data?.posts}
                 currentPage={currentPage}
                 pageCount={pageCount}
                 handlePageChange={handlePageChange}
                 displayingLeaderBoard={displayingLeaderBoard}
-                loadingLeaderBoard={loadingLeaderBoard}
               />
-            ) : null}
-          </div>
-        ) : (
-          <></>
-        )}
+            )
+          ) : null}
+        </div>
       </Grid>
     </Container>
   );

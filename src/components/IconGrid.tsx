@@ -1,6 +1,6 @@
-import { Avatar, Button, Fade, Tooltip, Typography } from "@material-ui/core";
+import { Avatar, Fade, Tooltip, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import { LeaderBoardData, RedditPost } from "../types";
+import { RedditPost } from "../types";
 
 type DisplaySwitchesPropTypes = {
   leaderBoardEntry?: RedditPost;

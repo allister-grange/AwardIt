@@ -56,10 +56,28 @@ app.get("/posts", async (req: Request, res: Response) => {
     const totalRows = result.rowCount;
     const totalPages = Math.ceil(totalRows / itemsPerPage);
 
+    const posts = result.rows.map((p) => {
+      const castedCoins = p.coins as Coin[];
+
+      const freshCoins = castedCoins.map((c) => {
+        return {
+          coin_price: parseInt(c.M.coin_price.N),
+          count: parseInt(c.M.count.N),
+          icon: c.M.icon.S,
+          name: c.M.name.S,
+        };
+      });
+
+      return {
+        ...p,
+        coins: freshCoins,
+      };
+    });
+
     const response = {
       page: page,
       totalPages: totalPages,
-      posts: result.rows,
+      posts,
     };
 
     res.json(response);
@@ -103,3 +121,30 @@ const port = 3001;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+export interface Coin {
+  M: M;
+}
+
+export interface M {
+  icon: Icon;
+  name: Name;
+  count: Count;
+  coin_price: CoinPrice;
+}
+
+export interface Icon {
+  S: string;
+}
+
+export interface Name {
+  S: string;
+}
+
+export interface Count {
+  N: string;
+}
+
+export interface CoinPrice {
+  N: string;
+}
