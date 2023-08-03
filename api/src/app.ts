@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
-import { Pool } from "pg";
-import fs from "fs";
 import cors from "cors";
+import express, { Request, Response } from "express";
+import fs from "fs";
+import { Pool } from "pg";
 
 const allowedOrigins = ["http://localhost:3000"];
 
@@ -53,7 +53,11 @@ app.get("/posts", async (req: Request, res: Response) => {
       [offset, itemsPerPage]
     );
 
-    const totalRows = result.rowCount;
+    // Use the approximate row count estimation
+    const totalApproximateRows = await pool.query(
+      "SELECT reltuples FROM pg_class WHERE relname = 'reddit_posts'"
+    );
+    const totalRows = parseFloat(totalApproximateRows.rows[0].reltuples);
     const totalPages = Math.ceil(totalRows / itemsPerPage);
 
     const posts = result.rows.map((p) => {

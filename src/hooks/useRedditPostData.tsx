@@ -3,6 +3,7 @@ import { GetPostsApiResponse } from "../types";
 
 type State = {
   data?: GetPostsApiResponse;
+  page: number;
   isLoading: boolean;
   error: string | null;
 };
@@ -10,14 +11,21 @@ type State = {
 type Action =
   | { type: "FETCH_INIT" }
   | { type: "FETCH_SUCCESS"; payload: any }
-  | { type: "FETCH_FAILURE"; payload: string };
+  | { type: "FETCH_FAILURE"; payload: string }
+  | { type: "FETCH_PAGE"; payload: number };
 
 const reducer = (state: State, action: Action): State => {
+  console.log("called", state, action);
+
   switch (action.type) {
     case "FETCH_INIT":
       return { ...state, isLoading: true, error: null };
     case "FETCH_SUCCESS":
       return { ...state, isLoading: false, data: action.payload, error: null };
+    case "FETCH_PAGE":
+      console.log("comse on");
+
+      return { ...state, isLoading: false, error: null, page: action.payload };
     case "FETCH_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
     default:
@@ -30,32 +38,46 @@ const useApiCall = (url: string) => {
     data: undefined,
     isLoading: false,
     error: null,
+    page: 1,
   });
 
-  const fetchPosts = useCallback(async () => {
-    dispatch({ type: "FETCH_INIT" });
-    try {
-      const response = await fetch(`${url}/posts`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+  const changePage = useCallback((pageNumber: number) => {
+    dispatch({ type: "FETCH_PAGE", payload: pageNumber });
+  }, []);
+
+  const fetchPosts = useCallback(
+    async (pageNumber: number) => {
+      console.log("page changed so I roll back");
+
+      dispatch({ type: "FETCH_INIT" });
+      try {
+        const response = await fetch(`${url}/posts?page=${pageNumber}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = (await response.json()) as GetPostsApiResponse;
+
+        const formattedData = data.posts.map((post: any) => ({
+          ...post,
+          subReddit: post.subreddit,
+          totalCost: parseInt(post.totalcost),
+        }));
+
+        data["posts"] = formattedData;
+
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE", payload: error as string });
       }
-      const data = (await response.json()) as GetPostsApiResponse;
+    },
+    [url]
+  );
 
-      const formattedData = data.posts.map((post: any) => ({
-        ...post,
-        subReddit: post.subreddit,
-        totalCost: parseInt(post.totalcost),
-      }));
+  useEffect(() => {
+    fetchPosts(state.page);
+  }, [state.page]);
 
-      data["posts"] = formattedData;
-
-      dispatch({ type: "FETCH_SUCCESS", payload: data });
-    } catch (error) {
-      dispatch({ type: "FETCH_FAILURE", payload: error as string });
-    }
-  }, [url]);
-
-  return { state, fetchPosts };
+  return { state, fetchPosts, changePage };
 };
 
 export default useApiCall;

@@ -80,17 +80,13 @@ export default function App() {
   const [loadingLeaderBoard, setLoadingLeaderBoard] = useState(false);
   const [data, setData] = useState<RedditPost | undefined>();
   const [url, setUrl] = React.useState("");
-  const { state, fetchPosts } = useRedditPostData("http://localhost:3001");
-
-  // Pagination data
-  const PER_PAGE = 5;
-  const offset = (currentPage - 1) * PER_PAGE;
-  // const currentPageData = leaderBoardData.slice(offset, offset + PER_PAGE);
-  const pageCount = Math.ceil(leaderBoardData.length / PER_PAGE);
+  const { state, fetchPosts, changePage } = useRedditPostData(
+    "http://localhost:3001"
+  );
 
   useEffect(() => {
     // getLeaderBoardEntries();
-    fetchPosts();
+    // fetchPosts();
   }, []);
 
   // const getLeaderBoardEntries = (id?: string) => {
@@ -128,7 +124,9 @@ export default function App() {
     event: React.ChangeEvent<unknown>,
     pageNumber: number
   ) {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    console.log("Chaing this bitch to", pageNumber);
+    changePage(pageNumber);
   }
 
   const toggleChecked = () => {
@@ -268,8 +266,8 @@ export default function App() {
             ) : (
               <LeaderBoard
                 posts={state.data?.posts}
-                currentPage={currentPage}
-                pageCount={pageCount}
+                currentPage={state.data.page}
+                pageCount={state.data.totalPages}
                 handlePageChange={handlePageChange}
                 displayingLeaderBoard={displayingLeaderBoard}
               />

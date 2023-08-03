@@ -68,6 +68,8 @@ export default function LeaderBoard({
 }: LeaderBoardProps) {
   const classes = useStyles();
 
+  console.log(currentPage, pageCount);
+
   return (
     <Slide
       direction="up"
