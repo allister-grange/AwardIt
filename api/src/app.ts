@@ -22,6 +22,7 @@ const corsOptions = {
 
 const app = express();
 app.use(cors(corsOptions));
+app.use(express.json());
 
 // PostgreSQL configuration
 const pool = new Pool({
@@ -86,10 +87,40 @@ app.get("/posts", async (req: Request, res: Response) => {
       posts,
     };
 
-    res.json(response);
+    res.status(200).json(response);
   } catch (err) {
     console.error("Error fetching data:", err.message);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/posts", async (req: Request, res: Response) => {
+  try {
+    const { id, subReddit, totalCost, permalink, coins, title } = req.body;
+
+    const query = `
+      INSERT INTO reddit_posts (id, subReddit, totalCost, permalink, coins, title)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (id) DO UPDATE
+      SET subReddit = $2, totalCost = $3, permalink = $4, coins = $5, title = $6
+      RETURNING id, subReddit, totalCost, permalink, coins, title
+  `;
+
+    const values = [
+      id,
+      subReddit,
+      totalCost,
+      permalink,
+      JSON.stringify(coins),
+      title,
+    ];
+
+    const result = await pool.query(query, values);
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating Reddit post:", error);
+    res.status(500).send("Internal Server Error" + error);
   }
 });
 
@@ -110,9 +141,9 @@ app.get("/awards", async (req: Request, res: Response) => {
       redditBaseUrl = "https://www.reddit.com/api/info.json?id=t1_";
     }
 
-    console.log(`${redditBaseUrl}${id}`);
-
-    const redditRes = await fetch(`${redditBaseUrl}${id}`);
+    const redditRes = await fetch(`${redditBaseUrl}${id}`, {
+      headers: { "User-Agent": "AwardsEstimator by allig256" },
+    });
     const redditApiData = (await redditRes.json()) as RedditApiResponse;
     const childData = redditApiData.data.children[0].data;
 
@@ -122,11 +153,15 @@ app.get("/awards", async (req: Request, res: Response) => {
       coinTotalCost += award.coin_price * award.count;
 
       return {
-        name: award.name,
-        coin_price: award.coin_price,
-        count: award.count,
-        icon: award.resized_icons[1].url.replace("&amp;", "&"),
-      };
+        M: {
+          icon: {
+            S: decodeURIComponent(award.resized_icons[2].url),
+          },
+          name: { S: award.name },
+          coin_price: { N: award.coin_price.toString() },
+          count: { N: award.count.toString() },
+        },
+      } as Coin;
     });
 
     const response = {

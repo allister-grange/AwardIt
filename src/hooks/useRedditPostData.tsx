@@ -71,15 +71,32 @@ const useApiCall = (url: string) => {
     async (id, postOrComment) => {
       dispatch({ type: "FETCH_INIT" });
       try {
-        const response = await fetch(
+        const getAwardsForIdsRes = await fetch(
           `${url}/awards?id=${id}&postOrComment=${postOrComment}`
         );
-        if (!response.ok) {
-          throw new Error("Network response failed");
+        if (!getAwardsForIdsRes.ok) {
+          throw new Error("GetAwardsForIdsRes failed");
         }
-        const awardData = await response.json();
+        const awardData = await getAwardsForIdsRes.json();
 
-        console.log(awardData);
+        console.log("awardData", awardData);
+        // push the data into the leader board
+        const pushingDataIntoDbRes = await fetch(`${url}/posts`, {
+          body: JSON.stringify(awardData),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!pushingDataIntoDbRes.ok) {
+          throw new Error("Failed to create the reddit post record");
+        }
+        const createdPostData = await pushingDataIntoDbRes.json();
+
+        console.log("createdPostData", createdPostData);
+
+        // return the new leader board data with this row highlighted
 
         // dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {

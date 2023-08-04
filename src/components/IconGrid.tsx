@@ -40,7 +40,7 @@ export default function IconGrid({
                   style={{ height: "20px", width: "20px" }}
                   sizes="sm"
                   alt={coin.name + " icon"}
-                  src={coin.icon}
+                  src={decodeURI(coin.icon).replace("&amp;", "&")}
                 />
               </div>
             </Tooltip>
