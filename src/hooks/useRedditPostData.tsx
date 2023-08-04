@@ -15,16 +15,12 @@ type Action =
   | { type: "FETCH_PAGE"; payload: number };
 
 const reducer = (state: State, action: Action): State => {
-  console.log("called", state, action);
-
   switch (action.type) {
     case "FETCH_INIT":
       return { ...state, isLoading: true, error: null };
     case "FETCH_SUCCESS":
       return { ...state, isLoading: false, data: action.payload, error: null };
     case "FETCH_PAGE":
-      console.log("comse on");
-
       return { ...state, isLoading: false, error: null, page: action.payload };
     case "FETCH_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
@@ -47,8 +43,6 @@ const useApiCall = (url: string) => {
 
   const fetchPosts = useCallback(
     async (pageNumber: number) => {
-      console.log("page changed so I roll back");
-
       dispatch({ type: "FETCH_INIT" });
       try {
         const response = await fetch(`${url}/posts?page=${pageNumber}`);
@@ -73,11 +67,33 @@ const useApiCall = (url: string) => {
     [url]
   );
 
+  const searchAwardsForId = useCallback(
+    async (id, postOrComment) => {
+      dispatch({ type: "FETCH_INIT" });
+      try {
+        const response = await fetch(
+          `${url}/awards?id=${id}&postOrComment=${postOrComment}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response failed");
+        }
+        const awardData = await response.json();
+
+        console.log(awardData);
+
+        // dispatch({ type: "FETCH_SUCCESS", payload: data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE", payload: error as string });
+      }
+    },
+    [url]
+  );
+
   useEffect(() => {
     fetchPosts(state.page);
   }, [state.page]);
 
-  return { state, fetchPosts, changePage };
+  return { state, fetchPosts, changePage, searchAwardsForId };
 };
 
 export default useApiCall;

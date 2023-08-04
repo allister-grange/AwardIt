@@ -77,8 +77,6 @@ export default function LeaderBoard({
       unmountOnExit
     >
       <div className={classes.root}>
-        <div style={{ paddingTop: "15px" }}></div>
-        <hr />
         {posts.map((leaderBoardEntry, idx) => {
           return (
             <Paper

@@ -17,7 +17,7 @@ export type Coin = {
 
 export type RedditPost = {
   totalCost: number;
-  coins: Array<any>;
+  coins: Array<Coin>;
   id: string;
   permalink: string;
   subReddit: string;

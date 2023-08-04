@@ -67,27 +67,16 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
   const classes = useStyles();
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [hasSearched, setHasSearched] = useState(false);
   const [errorOnSearch, setErrorOnSearch] = useState(false);
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
-  const [leaderBoardData, setLeaderBoardData] = useState(
-    [] as LeaderBoardData[]
-  );
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
-  const [loadingLeaderBoard, setLoadingLeaderBoard] = useState(false);
-  const [data, setData] = useState<RedditPost | undefined>();
   const [url, setUrl] = React.useState("");
-  const { state, fetchPosts, changePage } = useRedditPostData(
+  const { state, changePage, searchAwardsForId } = useRedditPostData(
     "http://localhost:3001"
   );
-
-  useEffect(() => {
-    // getLeaderBoardEntries();
-    // fetchPosts();
-  }, []);
 
   // const getLeaderBoardEntries = (id?: string) => {
   //   setLoadingLeaderBoard(true);
@@ -191,6 +180,30 @@ export default function App() {
   //     });
   // };
 
+  // on search
+  const onSearchClick = () => {
+    if (url === "") return;
+    // parse out id of post or comment from search
+
+    const regex = /(?:old\.)?reddit\.com\/(?:r\/\w+\/comments\/)?(\w+)/i;
+    const match = url.match(regex);
+
+    if (!match) {
+      // TODO display an error here
+      console.log("URL does not match the pattern.");
+      return;
+    }
+
+    const postId = match[1];
+    // get the awards for that post
+    const data = searchAwardsForId(postId, postOrComment);
+
+    // when you search, you want to be taken to the page that the reddit post is on
+    // on the leaderboard
+
+    // all the calling logic should be done in the hook, the "data" that it returns should just change magically
+  };
+
   return (
     <Container maxWidth="xl">
       <Grid
@@ -222,7 +235,7 @@ export default function App() {
             <Grid item xs={12}>
               <SearchBar
                 value={url}
-                // onSearchClick={onSearchClick}
+                onSearchClick={onSearchClick}
                 handleChange={handleChange}
                 isSearching={state.isLoading}
                 placeholder={postOrComment}
@@ -259,7 +272,7 @@ export default function App() {
 
           {/* TODO sort out this double query nonsense below */}
           {displayingLeaderBoard && state.data?.posts ? (
-            state.isLoading ? (
+            state.isLoading && !state.data.posts ? (
               <div className={classes.loadingIndicator}>
                 <CircularProgress color="secondary" />
               </div>

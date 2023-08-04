@@ -2,6 +2,8 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import { Pool } from "pg";
+import { RedditApiResponse } from "./types/redditApiResponse";
+import { Coin, RedditPost } from "./types/generic";
 
 const allowedOrigins = ["http://localhost:3000"];
 
@@ -91,6 +93,58 @@ app.get("/posts", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/awards", async (req: Request, res: Response) => {
+  try {
+    const id = req.query.id as string;
+    const postOrComment = req.query.postOrComment as string;
+
+    if (!id || !postOrComment) {
+      return res.status(400);
+    }
+
+    let redditBaseUrl = "";
+
+    if (postOrComment === "post") {
+      redditBaseUrl = "https://www.reddit.com/api/info.json?id=t3_";
+    } else {
+      redditBaseUrl = "https://www.reddit.com/api/info.json?id=t1_";
+    }
+
+    console.log(`${redditBaseUrl}${id}`);
+
+    const redditRes = await fetch(`${redditBaseUrl}${id}`);
+    const redditApiData = (await redditRes.json()) as RedditApiResponse;
+    const childData = redditApiData.data.children[0].data;
+
+    let coinTotalCost = 0;
+
+    const coins = childData.all_awardings.map((award) => {
+      coinTotalCost += award.coin_price * award.count;
+
+      return {
+        name: award.name,
+        coin_price: award.coin_price,
+        count: award.count,
+        icon: award.resized_icons[1].url.replace("&amp;", "&"),
+      };
+    });
+
+    const response = {
+      totalCost: coinTotalCost,
+      coins,
+      id: id,
+      permalink: `https://reddit.com${childData.permalink}`,
+      subReddit: childData.subreddit,
+      title: childData.title,
+    };
+
+    res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching data:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.post("/load-data", async (req: Request, res: Response) => {
   try {
     const rawData = fs.readFileSync("export.json", "utf8");
@@ -125,30 +179,3 @@ const port = 3001;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
-export interface Coin {
-  M: M;
-}
-
-export interface M {
-  icon: Icon;
-  name: Name;
-  count: Count;
-  coin_price: CoinPrice;
-}
-
-export interface Icon {
-  S: string;
-}
-
-export interface Name {
-  S: string;
-}
-
-export interface Count {
-  N: string;
-}
-
-export interface CoinPrice {
-  N: string;
-}
