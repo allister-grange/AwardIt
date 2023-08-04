@@ -78,21 +78,27 @@ export default function LeaderBoard({
     >
       <div className={classes.root}>
         {posts.map((leaderBoardEntry, idx) => {
+          console.log(posts);
+
           return (
             <Paper
               elevation={2}
               key={idx}
-              // style={
-              //   leaderBoardEntry.highlighted
-              //     ? { backgroundColor: "#ffd9b5" }
-              //     : {}
-              // }
+              style={
+                leaderBoardEntry.isHighlighted
+                  ? { backgroundColor: "#ffd9b5" }
+                  : {}
+              }
               className={classes.paper}
             >
               <Grid container spacing={1}>
                 <Grid item xs={1}>
                   <LeaderBoardSegment
-                    message={`#${idx + (currentPage - 1) * 10 + 1}`}
+                    message={`#${
+                      leaderBoardEntry.leaderBoardPosition
+                        ? leaderBoardEntry.leaderBoardPosition
+                        : idx + (currentPage - 1) * 10 + 1
+                    }`}
                   />
                 </Grid>
                 <Grid

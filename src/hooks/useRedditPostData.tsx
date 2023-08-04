@@ -79,7 +79,6 @@ const useApiCall = (url: string) => {
         }
         const awardData = await getAwardsForIdsRes.json();
 
-        console.log("awardData", awardData);
         // push the data into the leader board
         const pushingDataIntoDbRes = await fetch(`${url}/posts`, {
           body: JSON.stringify(awardData),
@@ -94,11 +93,26 @@ const useApiCall = (url: string) => {
         }
         const createdPostData = await pushingDataIntoDbRes.json();
 
-        console.log("createdPostData", createdPostData);
+        // query the leaderboard again, we only need the page that has the data on it
+        const response = await fetch(
+          `${url}/postsByTotalCost?totalCost=${createdPostData.totalcost}`
+        );
+        if (!response.ok) {
+          throw new Error("Pulling down leader board by total cost failed");
+        }
+        const data = (await response.json()) as GetPostsApiResponse;
 
-        // return the new leader board data with this row highlighted
+        // set the highlighted row to the row that matches the one returned from the post above
+        const formattedData = data.posts.map((post: any) => ({
+          ...post,
+          subReddit: post.subreddit,
+          totalCost: parseInt(post.totalcost),
+          isHighlighted: createdPostData.id === post.id,
+        }));
 
-        // dispatch({ type: "FETCH_SUCCESS", payload: data });
+        data["posts"] = formattedData;
+
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE", payload: error as string });
       }

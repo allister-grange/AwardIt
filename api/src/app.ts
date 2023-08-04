@@ -5,14 +5,15 @@ import { Pool } from "pg";
 import { RedditApiResponse } from "./types/redditApiResponse";
 import { Coin, RedditPost } from "./types/generic";
 
-const allowedOrigins = ["http://localhost:3000"];
+const ALLOWED_ORIGINS = ["http://localhost:3000"];
+const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
 
 const corsOptions = {
   origin: (
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -46,14 +47,13 @@ pool.connect((err, client, done) => {
 
 app.get("/posts", async (req: Request, res: Response) => {
   try {
-    const itemsPerPage = 10; // Adjust the number of items per page as needed
     const page = parseInt(req.query.page as string, 10) || 1;
-    const offset = (page - 1) * itemsPerPage;
+    const offset = (page - 1) * ITEMS_PER_PAGE;
 
     // Fetch the data from the "reddit_awards" table
     const result = await pool.query(
       "SELECT * FROM reddit_posts ORDER BY totalCost DESC OFFSET $1 LIMIT $2",
-      [offset, itemsPerPage]
+      [offset, ITEMS_PER_PAGE]
     );
 
     // Use the approximate row count estimation
@@ -61,7 +61,7 @@ app.get("/posts", async (req: Request, res: Response) => {
       "SELECT reltuples FROM pg_class WHERE relname = 'reddit_posts'"
     );
     const totalRows = parseFloat(totalApproximateRows.rows[0].reltuples);
-    const totalPages = Math.ceil(totalRows / itemsPerPage);
+    const totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 
     const posts = result.rows.map((p) => {
       const castedCoins = p.coins as Coin[];
@@ -171,6 +171,64 @@ app.get("/awards", async (req: Request, res: Response) => {
       permalink: `https://reddit.com${childData.permalink}`,
       subReddit: childData.subreddit,
       title: childData.title,
+    };
+
+    res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching data:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/postsByTotalCost", async (req: Request, res: Response) => {
+  try {
+    const totalCost = parseInt(req.query.totalCost as string);
+
+    // Fetch the data from the "reddit_awards" table
+    const result = await pool.query(
+      "SELECT * FROM reddit_posts WHERE totalcost <= $1 ORDER BY totalCost DESC LIMIT $2",
+      [totalCost, ITEMS_PER_PAGE]
+    );
+
+    // Use the approximate row count estimation
+    const totalRowsQuery = await pool.query(
+      "SELECT COUNT(*) FROM reddit_posts "
+    );
+    const totalRowsBelowQuery = await pool.query(
+      "SELECT COUNT(*) FROM reddit_posts WHERE totalcost < $1",
+      [totalCost]
+    );
+
+    const totalRows = parseFloat(totalRowsQuery.rows[0].count);
+    const totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
+
+    const totalRowsBelow = totalRowsBelowQuery.rows[0].count;
+
+    const pageNumber = (totalRows - totalRowsBelow) / 10;
+
+    const posts = result.rows.map((p, idx) => {
+      const castedCoins = p.coins as Coin[];
+
+      const freshCoins = castedCoins.map((c) => {
+        return {
+          coin_price: parseInt(c.M.coin_price.N),
+          count: parseInt(c.M.count.N),
+          icon: c.M.icon.S,
+          name: c.M.name.S,
+        };
+      });
+
+      return {
+        ...p,
+        coins: freshCoins,
+        leaderBoardPosition: totalRows - totalRowsBelow + idx,
+      };
+    });
+
+    const response = {
+      page: pageNumber,
+      totalPages: totalPages,
+      posts,
     };
 
     res.status(200).json(response);

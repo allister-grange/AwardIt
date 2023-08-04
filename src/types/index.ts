@@ -22,10 +22,13 @@ export type RedditPost = {
   permalink: string;
   subReddit: string;
   title: string;
+  isHighlighted?: boolean;
+  leaderBoardPosition?: number;
 };
 
 export type GetPostsApiResponse = {
   posts: RedditPost[];
   totalPages: number;
   page: number;
+  isHighlighted: boolean;
 };
