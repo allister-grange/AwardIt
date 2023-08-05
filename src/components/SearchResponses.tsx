@@ -4,17 +4,18 @@ import { createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
 type SearchResponsesProps = {
   errorOnSearch: boolean;
   noAwardsForPost: boolean;
-  displayingCoins: boolean;
   postOrComment: string;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     textPadding: {
-      paddingTop: "25px",
+      paddingBottom: "2rem",
+      fontSize: "1.1rem",
     },
     errorText: {
-      paddingTop: "25px",
+      paddingBottom: "2rem",
+      fontSize: "1.1rem",
       color: "red",
     },
   })
@@ -23,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function SearchResponses({
   errorOnSearch,
   noAwardsForPost,
-  displayingCoins,
   postOrComment,
 }: SearchResponsesProps) {
   const classes = useStyles();
@@ -38,7 +38,7 @@ export default function SearchResponses({
           gutterBottom
         >
           {
-            "error on search :( I'm either broken or your search is malformed - make sure the ID of the post is in the url"
+            "🤕 there's an issue with your url - make sure the ID of the post is present"
           }
         </Typography>
       ) : null}

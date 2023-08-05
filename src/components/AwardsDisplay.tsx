@@ -14,7 +14,6 @@ import {
 import { RedditPost } from "../types";
 
 type AwardsDisplayPropTypes = {
-  hasSearched: boolean;
   setDisplayingCoins: React.Dispatch<React.SetStateAction<boolean>>;
   data?: RedditPost;
   displayingLeaderBoard: boolean;
@@ -59,7 +58,6 @@ const roundToTwoDp = (input: number) => {
 };
 
 export default function AwardsDisplay({
-  hasSearched,
   setDisplayingCoins,
   data,
   displayingLeaderBoard,
@@ -69,7 +67,7 @@ export default function AwardsDisplay({
   return (
     <Slide
       direction={displayingLeaderBoard ? "right" : "up"}
-      in={hasSearched}
+      in={!!data}
       timeout={1000}
       onEntered={() => setDisplayingCoins(true)}
       onExiting={() => setDisplayingCoins(false)}
@@ -108,7 +106,12 @@ export default function AwardsDisplay({
           align="center"
           variant="body1"
           gutterBottom
-          style={{ paddingTop: "20px" }}
+          style={{
+            paddingTop: "2rem",
+            paddingBottom: "2rem",
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+          }}
         >
           {"total estimated cost of coins is $" +
             lowestPossiblePrice(data?.totalCost) +

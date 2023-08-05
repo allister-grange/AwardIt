@@ -6,10 +6,12 @@ type State = {
   page: number;
   isLoading: boolean;
   error: string | null;
+  hasSearched: boolean;
 };
 
 type Action =
   | { type: "FETCH_INIT" }
+  | { type: "SET_SEARCHED" }
   | { type: "FETCH_SUCCESS"; payload: any }
   | { type: "FETCH_FAILURE"; payload: string }
   | { type: "FETCH_PAGE"; payload: number };
@@ -18,6 +20,8 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "FETCH_INIT":
       return { ...state, isLoading: true, error: null };
+    case "SET_SEARCHED":
+      return { ...state, hasSearched: true };
     case "FETCH_SUCCESS":
       return { ...state, isLoading: false, data: action.payload, error: null };
     case "FETCH_PAGE":
@@ -35,6 +39,7 @@ const useApiCall = (url: string) => {
     isLoading: false,
     error: null,
     page: 1,
+    hasSearched: false,
   });
 
   const changePage = useCallback((pageNumber: number) => {
@@ -113,6 +118,7 @@ const useApiCall = (url: string) => {
         data["posts"] = formattedData;
 
         dispatch({ type: "FETCH_SUCCESS", payload: data });
+        dispatch({ type: "SET_SEARCHED" });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE", payload: error as string });
       }

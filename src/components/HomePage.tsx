@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
   const classes = useStyles();
 
-  const [hasSearched, setHasSearched] = useState(false);
   const [errorOnSearch, setErrorOnSearch] = useState(false);
   const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(true);
@@ -91,7 +90,6 @@ export default function App() {
     }
   };
 
-  // on search
   const onSearchClick = () => {
     if (url === "") return;
 
@@ -103,8 +101,7 @@ export default function App() {
       const match = url.match(regex);
 
       if (!match) {
-        // TODO display an error here
-        console.log("URL does not match the pattern.");
+        setErrorOnSearch(true);
         return;
       }
 
@@ -114,15 +111,12 @@ export default function App() {
       const match = url.match(regex);
 
       if (!match) {
-        // TODO display an error here
-        console.log("URL does not match the pattern.");
+        setErrorOnSearch(true);
         return;
       }
 
       id = match[1];
     }
-
-    console.log("Found id", id, postOrComment);
 
     searchAwardsForId(id, postOrComment);
   };
@@ -149,9 +143,7 @@ export default function App() {
         </Grid>
         <div
           className={
-            hasSearched || displayingLeaderBoard
-              ? classes.raisedSearchBar
-              : classes.searchBar
+            displayingLeaderBoard ? classes.raisedSearchBar : classes.searchBar
           }
         >
           <Grid container justify="center" alignItems="center">
@@ -175,11 +167,9 @@ export default function App() {
           </Grid>
         </div>
 
-        {/* WHAT DOES THIS DO?? */}
         <div className={classes.awardsGrid}>
-          {displayingCoins ? (
+          {displayingCoins && state.hasSearched ? (
             <AwardsDisplay
-              hasSearched={hasSearched}
               data={state.data?.posts[0]}
               displayingLeaderBoard={displayingLeaderBoard}
               setDisplayingCoins={setDisplayingCoins}
@@ -189,7 +179,6 @@ export default function App() {
           <SearchResponses
             errorOnSearch={errorOnSearch}
             noAwardsForPost={noAwardsForPost}
-            displayingCoins={displayingCoins}
             postOrComment={postOrComment}
           />
 
