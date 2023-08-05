@@ -146,9 +146,9 @@ export default function LeaderBoard({
                     description={"id"}
                   />
                   <LeaderBoardSegment
-                    message={`$${lowestPossiblePrice(
+                    message={`${lowestPossiblePrice(
                       leaderBoardEntry.totalCost
-                    )} to $${highestPossiblePrice(leaderBoardEntry.totalCost)}`}
+                    )} to ${highestPossiblePrice(leaderBoardEntry.totalCost)}`}
                     description={"estimated price"}
                   />
                 </Grid>
@@ -173,15 +173,24 @@ export default function LeaderBoard({
 const highestPossiblePrice = (apiPrice: any) => {
   const lowestCoinRatio: number = 1.99 / 500;
   let highestCostPrice = lowestCoinRatio * apiPrice;
-  return roundToTwoDp(highestCostPrice);
+  return formatPrice(highestCostPrice);
 };
 
 const lowestPossiblePrice = (apiPrice: any) => {
   const highestCoinRatio: number = 99.99 / 40000;
   let lowestCostPrice = highestCoinRatio * apiPrice;
-  return roundToTwoDp(lowestCostPrice);
+  return formatPrice(lowestCostPrice);
 };
 
-const roundToTwoDp = (input: number) => {
-  return Math.round((input + Number.EPSILON) * 100) / 100;
+const formatPrice = (dollarAmount: number) => {
+  let formattedAmount = dollarAmount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
+  if (dollarAmount >= 100) {
+    formattedAmount = formattedAmount.replace(/\.\d\d$/, ""); // Remove decimal and two digits after it
+  }
+
+  return formattedAmount;
 };
