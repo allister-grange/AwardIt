@@ -4,6 +4,7 @@ import fs from "fs";
 import { Pool } from "pg";
 import { RedditApiResponse } from "./types/redditApiResponse";
 import { Coin, RedditPost } from "./types/generic";
+const he = require("he");
 
 const ALLOWED_ORIGINS = ["http://localhost:3000"];
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
@@ -152,13 +153,10 @@ app.get("/awards", async (req: Request, res: Response) => {
     const coins = childData.all_awardings.map((award) => {
       coinTotalCost += award.coin_price * award.count;
 
-      const originalUrl = award.resized_icons[2].url;
-      const htmlDecodedUrl = originalUrl.replace(/&amp;/g, "&");
-
       return {
         M: {
           icon: {
-            S: decodeURIComponent(htmlDecodedUrl),
+            S: he.decode(award.resized_icons[2].url),
           },
           name: { S: award.name },
           coin_price: { N: award.coin_price.toString() },
@@ -173,10 +171,11 @@ app.get("/awards", async (req: Request, res: Response) => {
       id: id,
       permalink: `https://reddit.com${childData.permalink}`,
       subReddit: childData.subreddit,
-      title: postOrComment === "post" ? childData.title : childData.body,
+      title:
+        postOrComment === "post"
+          ? he.decode(childData.title)
+          : he.decode(childData.body),
     };
-
-    console.log(response);
 
     res.status(200).json(response);
   } catch (err) {
