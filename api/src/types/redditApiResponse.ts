@@ -21,6 +21,7 @@ export interface Data2 {
   approved_at_utc: any;
   subreddit: string;
   selftext: string;
+  body: string;
   author_fullname: string;
   saved: boolean;
   mod_reason_title: any;

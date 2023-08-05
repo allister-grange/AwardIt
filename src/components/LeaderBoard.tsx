@@ -78,8 +78,6 @@ export default function LeaderBoard({
     >
       <div className={classes.root}>
         {posts.map((leaderBoardEntry, idx) => {
-          console.log(posts);
-
           return (
             <Paper
               elevation={2}

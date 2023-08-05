@@ -173,8 +173,10 @@ app.get("/awards", async (req: Request, res: Response) => {
       id: id,
       permalink: `https://reddit.com${childData.permalink}`,
       subReddit: childData.subreddit,
-      title: childData.title,
+      title: postOrComment === "post" ? childData.title : childData.body,
     };
+
+    console.log(response);
 
     res.status(200).json(response);
   } catch (err) {

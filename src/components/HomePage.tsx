@@ -1,21 +1,15 @@
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
-import {
-  createAwardItLeaderBoardEntry,
-  getAwardCountForId,
-  getAwardItLeaderBoardEntries,
-} from "../services/posts";
-import { RedditPost, LeaderBoardData } from "../types";
+import React, { useState } from "react";
+import useRedditPostData from "../hooks/useRedditPostData";
 import AwardsDisplay from "./AwardsDisplay";
 import DisplaySwitches from "./DisplaySwitches";
 import Header from "./Header";
 import LeaderBoard from "./LeaderBoard";
 import SearchBar from "./SearchBar";
 import SearchResponses from "./SearchResponses";
-import useRedditPostData from "../hooks/useRedditPostData";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 require("dotenv").config();
 
@@ -78,33 +72,6 @@ export default function App() {
     "http://localhost:3001"
   );
 
-  // const getLeaderBoardEntries = (id?: string) => {
-  //   setLoadingLeaderBoard(true);
-  //   getAwardItLeaderBoardEntries()
-  //     .then((res) => {
-  //       const sortedLeaderBoardData = res.sort(
-  //         (a, b) => b.totalCost - a.totalCost
-  //       );
-
-  //       sortedLeaderBoardData.map((leaderboard, idx) => {
-  //         leaderboard.position = idx + 1;
-  //         if (id === leaderboard.id) {
-  //           /* sets the current page to be where the post is in
-  //           the leaderboard, and highlights the entry */
-  //           const page = Math.ceil(leaderboard.position / PER_PAGE);
-  //           leaderboard.highlighted = true;
-  //           setCurrentPage(page);
-  //         } else {
-  //           leaderboard.highlighted = false;
-  //         }
-  //       });
-
-  //       setLeaderBoardData(sortedLeaderBoardData);
-  //       setLoadingLeaderBoard(false);
-  //     })
-  //     .catch((err) => console.error(err));
-  // };
-
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
   };
@@ -113,8 +80,6 @@ export default function App() {
     event: React.ChangeEvent<unknown>,
     pageNumber: number
   ) {
-    // setCurrentPage(pageNumber);
-    console.log("Chaing this bitch to", pageNumber);
     changePage(pageNumber);
   }
 
@@ -126,82 +91,40 @@ export default function App() {
     }
   };
 
-  const pushResultToLeaderboards = async ({
-    id,
-    coins,
-    totalCost,
-    permalink,
-    subReddit,
-    title,
-  }: RedditPost) => {
-    await createAwardItLeaderBoardEntry(
-      id,
-      coins,
-      totalCost,
-      permalink,
-      subReddit,
-      title
-    )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  // const onSearchClick = () => {
-  //   if (url === "") return;
-
-  //   setIsSearching(true);
-  //   setNoAwardsForPost(false);
-  //   setErrorOnSearch(false);
-
-  //   getAwardCountForId(url, postOrComment)
-  //     .then(async (result) => {
-  //       if (result.coins.length === 0) {
-  //         setDisplayingCoins(false);
-  //         setNoAwardsForPost(true);
-  //         return;
-  //       }
-
-  //       setData(result);
-  //       setHasSearched(true);
-  //       await pushResultToLeaderboards(result);
-  //       await getLeaderBoardEntries(result.id);
-  //       setDisplayingLeaderBoard(true);
-  //     })
-  //     .catch((err) => {
-  //       setErrorOnSearch(true);
-  //       setDisplayingCoins(false);
-  //     })
-  //     .finally(() => {
-  //       setIsSearching(false);
-  //     });
-  // };
-
   // on search
   const onSearchClick = () => {
     if (url === "") return;
+
     // parse out id of post or comment from search
+    let id = "";
 
-    const regex = /(?:old\.)?reddit\.com\/(?:r\/\w+\/comments\/)?(\w+)/i;
-    const match = url.match(regex);
+    if (postOrComment === "post") {
+      const regex = /(?:old\.)?reddit\.com\/(?:r\/\w+\/comments\/)?(\w+)/i;
+      const match = url.match(regex);
 
-    if (!match) {
-      // TODO display an error here
-      console.log("URL does not match the pattern.");
-      return;
+      if (!match) {
+        // TODO display an error here
+        console.log("URL does not match the pattern.");
+        return;
+      }
+
+      id = match[1];
+    } else {
+      const regex = /\/([a-z0-9]+)\/?$/i;
+      const match = url.match(regex);
+
+      if (!match) {
+        // TODO display an error here
+        console.log("URL does not match the pattern.");
+        return;
+      }
+
+      id = match[1];
     }
 
-    const postId = match[1];
-    // get the awards for that post
-    const data = searchAwardsForId(postId, postOrComment);
+    console.log("Found id", id, postOrComment);
 
-    // when you search, you want to be taken to the page that the reddit post is on
-    // on the leaderboard
-
-    // all the calling logic should be done in the hook, the "data" that it returns should just change magically
+    searchAwardsForId(id, postOrComment);
   };
 
   return (
