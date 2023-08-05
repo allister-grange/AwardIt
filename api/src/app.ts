@@ -152,10 +152,13 @@ app.get("/awards", async (req: Request, res: Response) => {
     const coins = childData.all_awardings.map((award) => {
       coinTotalCost += award.coin_price * award.count;
 
+      const originalUrl = award.resized_icons[2].url;
+      const htmlDecodedUrl = originalUrl.replace(/&amp;/g, "&");
+
       return {
         M: {
           icon: {
-            S: decodeURIComponent(award.resized_icons[2].url),
+            S: decodeURIComponent(htmlDecodedUrl),
           },
           name: { S: award.name },
           coin_price: { N: award.coin_price.toString() },
@@ -204,7 +207,7 @@ app.get("/postsByTotalCost", async (req: Request, res: Response) => {
 
     const totalRowsBelow = totalRowsBelowQuery.rows[0].count;
 
-    const pageNumber = (totalRows - totalRowsBelow) / 10;
+    const pageNumber = Math.floor((totalRows - totalRowsBelow) / 10);
 
     const posts = result.rows.map((p, idx) => {
       const castedCoins = p.coins as Coin[];
