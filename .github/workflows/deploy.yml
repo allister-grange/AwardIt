@@ -22,4 +22,5 @@ jobs:
             git clone git@github.com:allister-grange/AwardIt.git
             echo 'Deployment to digital ocean finished'
             cd ./AwardIt/api
+            git checkout dev
             npm i
