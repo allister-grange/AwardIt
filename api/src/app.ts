@@ -5,12 +5,9 @@ import { Pool } from "pg";
 import { RedditApiResponse } from "./types/redditApiResponse";
 import { Coin, RedditPost } from "./types/generic";
 const he = require("he");
+require("dotenv").config();
 
-const ALLOWED_ORIGINS = [
-  "http://localhost:3000",
-  "https://awardit.info",
-  "https://www.awardit.info",
-];
+const ALLOWED_ORIGINS = ["https://awardit.info", "https://www.awardit.info"];
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
 
 const corsOptions = {
@@ -32,9 +29,9 @@ app.use(express.json());
 
 // PostgreSQL configuration
 const pool = new Pool({
-  user: "grangeal",
-  host: "localhost",
-  password: "<PASSWORD>",
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  password: process.env.DB_PASS,
   database: "awardit",
 });
 
