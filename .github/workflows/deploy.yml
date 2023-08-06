@@ -23,4 +23,3 @@ jobs:
             echo 'Deployment to digital ocean finished'
             cd ./AwardIt/api
             npm i
-            npm run dev
