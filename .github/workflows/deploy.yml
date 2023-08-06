@@ -21,6 +21,6 @@ jobs:
             cd awardit_backend
             git clone git@github.com:allister-grange/AwardIt.git
             echo 'Deployment to digital ocean finished'
-            cd ./AwardIt
+            cd ./AwardIt/api
             npm i
             npm run dev
