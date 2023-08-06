@@ -6,7 +6,11 @@ import { RedditApiResponse } from "./types/redditApiResponse";
 import { Coin, RedditPost } from "./types/generic";
 const he = require("he");
 
-const ALLOWED_ORIGINS = ["http://localhost:3000"];
+const ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "https://awardit.info",
+  "https://www.awardit.info",
+];
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
 
 const corsOptions = {
