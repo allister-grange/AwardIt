@@ -68,7 +68,7 @@ export default function App() {
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [url, setUrl] = React.useState("");
   const { state, changePage, searchAwardsForId } = useRedditPostData(
-    "http://localhost:3001"
+    "https://backend.awardit.info"
   );
 
   const handleChange = (prop: any) => (event: any) => {
