@@ -8,11 +8,11 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "axios": "^0.19.2",
+    "axios": "^1.4.0",
     "dotenv": "^8.6.0",
     "react": "latest",
     "react-dom": "latest",
-    "react-scripts": "latest",
+    "react-scripts": "^5.0.1",
     "typescript": "latest"
   },
   "scripts": {

@@ -9,9 +9,7 @@ import DisplaySwitches from "./DisplaySwitches";
 import Header from "./Header";
 import LeaderBoard from "./LeaderBoard";
 import SearchBar from "./SearchBar";
-import SearchResponses from "./SearchResponses";
-
-require("dotenv").config();
+import SearchError from "./SearchError";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,15 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function App() {
   const classes = useStyles();
 
-  const [errorOnSearch, setErrorOnSearch] = useState(false);
-  const [noAwardsForPost, setNoAwardsForPost] = useState(false);
   const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
   const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [url, setUrl] = React.useState("");
-  const { state, changePage, searchAwardsForId } = useRedditPostData(
-    "https://backend.awardit.info"
-  );
+  const { state, changePage, searchAwardsForId } = useRedditPostData();
 
   const handleChange = (prop: any) => (event: any) => {
     setUrl(event.target.value);
@@ -92,33 +86,7 @@ export default function App() {
 
   const onSearchClick = () => {
     if (url === "") return;
-
-    // parse out id of post or comment from search
-    let id = "";
-
-    if (postOrComment === "post") {
-      const regex = /(?:old\.)?reddit\.com\/(?:r\/\w+\/comments\/)?(\w+)/i;
-      const match = url.match(regex);
-
-      if (!match) {
-        setErrorOnSearch(true);
-        return;
-      }
-
-      id = match[1];
-    } else {
-      const regex = /\/([a-z0-9]+)\/?$/i;
-      const match = url.match(regex);
-
-      if (!match) {
-        setErrorOnSearch(true);
-        return;
-      }
-
-      id = match[1];
-    }
-
-    searchAwardsForId(id, postOrComment);
+    searchAwardsForId(url, postOrComment);
   };
 
   return (
@@ -176,28 +144,21 @@ export default function App() {
             />
           ) : null}
 
-          <SearchResponses
-            errorOnSearch={errorOnSearch}
-            noAwardsForPost={noAwardsForPost}
-            postOrComment={postOrComment}
-          />
+          <SearchError error={state.error} />
 
-          {/* TODO sort out this double query nonsense below */}
-          {displayingLeaderBoard && state.data?.posts ? (
-            state.isLoading && !state.data.posts ? (
-              <div className={classes.loadingIndicator}>
-                <CircularProgress color="secondary" />
-              </div>
-            ) : (
-              <LeaderBoard
-                posts={state.data?.posts}
-                currentPage={state.data.page}
-                pageCount={state.data.totalPages}
-                handlePageChange={handlePageChange}
-                displayingLeaderBoard={displayingLeaderBoard}
-              />
-            )
-          ) : null}
+          {displayingLeaderBoard && state.data ? (
+            <LeaderBoard
+              posts={state.data.posts}
+              currentPage={state.data.page}
+              pageCount={state.data.totalPages}
+              handlePageChange={handlePageChange}
+              displayingLeaderBoard={displayingLeaderBoard}
+            />
+          ) : (
+            <div className={classes.loadingIndicator}>
+              <CircularProgress color="secondary" />
+            </div>
+          )}
         </div>
       </Grid>
     </Container>

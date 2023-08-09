@@ -2,8 +2,8 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import { Pool } from "pg";
+import { Coin } from "./types/generic";
 import { RedditApiResponse } from "./types/redditApiResponse";
-import { Coin, RedditPost } from "./types/generic";
 const he = require("he");
 require("dotenv").config();
 
