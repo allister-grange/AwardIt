@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import useRedditPostData from "./hooks/useRedditPostData";
-import { LeaderBoardTailwind } from "./components/LeaderBoardTailwind";
+import { LeaderBoard } from "./components/LeaderBoard";
 import Footer from "./components/Footer";
 
 export default function App() {
-  const [displayingCoins, setDisplayingCoins] = useState(true);
   const [postOrComment, setPostOrComment] = useState("post");
-  const [displayingLeaderBoard, setDisplayingLeaderBoard] = useState(true);
   const [url, setUrl] = React.useState("");
   const { state, changePage, searchAwardsForId } = useRedditPostData();
 
@@ -59,12 +57,11 @@ export default function App() {
       {/* LEADERBOARD */}
 
       {state.data && (
-        <LeaderBoardTailwind
+        <LeaderBoard
           posts={state.data.posts}
           currentPage={state.data.page}
           pageCount={state.data.totalPages}
           handlePageChange={handlePageChange}
-          displayingLeaderBoard={displayingLeaderBoard}
         />
       )}
 

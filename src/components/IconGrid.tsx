@@ -1,68 +1,45 @@
-import { Avatar, Fade, Tooltip, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import { RedditPost } from "../types";
+import { Coin } from "../types";
 
-type DisplaySwitchesPropTypes = {
-  leaderBoardEntry?: RedditPost;
-};
+interface IconGridProps {
+  coins: Coin[];
+  setLeaderBoardPosShowingAllAwards: React.Dispatch<
+    React.SetStateAction<number>
+  >;
+  showingAllAwards: boolean;
+  position: number;
+}
 
-export default function IconGrid({
-  leaderBoardEntry,
-}: DisplaySwitchesPropTypes) {
-  const [showingAllCoins, setShowingAllCoins] = useState(false);
+export const IconGrid: React.FC<IconGridProps> = ({
+  coins,
+  showingAllAwards,
+  setLeaderBoardPosShowingAllAwards,
+  position,
+}) => {
+  // const [showingAllAwards, setShowingAllAwards] = useState(false);
 
   return (
-    <>
-      {leaderBoardEntry?.coins?.map((coin, idx) => {
-        if (idx < 30 || showingAllCoins) {
+    <div className="bg-transparent max-w-lg flex flex-row flex-wrap justify-center ml-auto p-2 borer-2xl items-center">
+      {coins.map((coin, idx) => {
+        if (idx < 30 || showingAllAwards) {
           return (
-            <Tooltip
-              key={idx}
-              style={{ cursor: "pointer" }}
-              TransitionComponent={Fade}
-              TransitionProps={{ timeout: 600 }}
-              title={coin.coin_price * coin.count + " coins"}
-              placement="top"
-              aria-label="coin price"
-              arrow
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingRight: "13px",
-                }}
-              >
-                <Typography variant="body1" gutterBottom>
-                  {coin.count + "x "}
-                </Typography>
-                <Avatar
-                  style={{ height: "20px", width: "20px" }}
-                  sizes="sm"
-                  alt={coin.name + " icon"}
-                  src={coin.icon}
-                />
-              </div>
-            </Tooltip>
-          );
-        } else if (idx === 30 && !showingAllCoins) {
-          return (
-            <div
-              onClick={() => setShowingAllCoins(true)}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              <Typography variant="body1" gutterBottom>
-                {"... show all awards"}
-              </Typography>
+            <div className="flex flex-row mr-3 py-1">
+              <span className="text-gray-500">{coin.count}x</span>
+              <img
+                className="w-5 h-5 rounded-full bg-transparent"
+                src={coin.icon}
+                alt="Reddit award icon"
+              />
             </div>
+          );
+        } else if (idx === 30 && !showingAllAwards) {
+          return (
+            <button onClick={() => setLeaderBoardPosShowingAllAwards(position)}>
+              ...show all awards
+            </button>
           );
         }
       })}
-    </>
+    </div>
   );
-}
+};

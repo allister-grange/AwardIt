@@ -7,9 +7,9 @@ import useRedditPostData from "../hooks/useRedditPostData";
 import AwardsDisplay from "./AwardsDisplay";
 import DisplaySwitches from "./DisplaySwitches";
 import Header from "./Header";
-import LeaderBoard from "./LeaderBoard";
 import SearchBar from "./SearchBar";
 import SearchError from "./SearchError";
+import { LeaderBoard } from "./LeaderBoard";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -152,7 +152,6 @@ export default function App() {
               currentPage={state.data.page}
               pageCount={state.data.totalPages}
               handlePageChange={handlePageChange}
-              displayingLeaderBoard={displayingLeaderBoard}
             />
           )}
           {state.isLoadingLeaderBoard && (
