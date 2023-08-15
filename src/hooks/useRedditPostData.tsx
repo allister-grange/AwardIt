@@ -1,18 +1,20 @@
 import { useEffect, useReducer, useCallback } from "react";
 import { GetPostsApiResponse } from "../types";
 
-const BACKEND_URL = "https://backend.awardit.com";
+const BACKEND_URL = "http://localhost:3001";
 
 type State = {
   data?: GetPostsApiResponse;
   page: number;
-  isLoading: boolean;
+  isLoadingLeaderBoard: boolean;
+  isLoadingSearch: boolean;
   error?: string;
   hasSearched: boolean;
 };
 
 type Action =
-  | { type: "FETCH_INIT" }
+  | { type: "FETCH_INIT_LEADERBOARD" }
+  | { type: "FETCH_INIT_SEARCH" }
   | { type: "SET_SEARCHED" }
   | { type: "FETCH_SUCCESS"; payload: any }
   | { type: "FETCH_FAILURE"; payload: string }
@@ -20,26 +22,29 @@ type Action =
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "FETCH_INIT":
-      return { ...state, isLoading: true, error: undefined };
+    case "FETCH_INIT_LEADERBOARD":
+      return { ...state, isLoadingLeaderBoard: true, error: undefined };
+    case "FETCH_INIT_SEARCH":
+      return { ...state, isLoadingSearch: true, error: undefined };
     case "SET_SEARCHED":
       return { ...state, hasSearched: true };
     case "FETCH_SUCCESS":
       return {
         ...state,
-        isLoading: false,
+        isLoadingLeaderBoard: false,
+        isLoadingSearch: false,
         data: action.payload,
         error: undefined,
       };
     case "FETCH_PAGE":
       return {
         ...state,
-        isLoading: false,
+        isLoadingLeaderBoard: false,
         error: undefined,
         page: action.payload,
       };
     case "FETCH_FAILURE":
-      return { ...state, isLoading: false, error: action.payload };
+      return { ...state, isLoadingLeaderBoard: false, error: action.payload };
     default:
       return state;
   }
@@ -75,7 +80,8 @@ const parseRedditIdFromUrl = (url: string, postOrComment: string) => {
 const useApiCall = () => {
   const [state, dispatch] = useReducer(reducer, {
     data: undefined,
-    isLoading: false,
+    isLoadingLeaderBoard: false,
+    isLoadingSearch: false,
     error: undefined,
     page: 1,
     hasSearched: false,
@@ -87,7 +93,7 @@ const useApiCall = () => {
 
   const fetchPosts = useCallback(
     async (pageNumber: number) => {
-      dispatch({ type: "FETCH_INIT" });
+      dispatch({ type: "FETCH_INIT_LEADERBOARD" });
       try {
         const response = await fetch(`${BACKEND_URL}/posts?page=${pageNumber}`);
         if (!response.ok) {
@@ -125,7 +131,7 @@ const useApiCall = () => {
       }
 
       try {
-        dispatch({ type: "FETCH_INIT" });
+        dispatch({ type: "FETCH_INIT_SEARCH" });
         const getAwardsForIdsRes = await fetch(
           `${BACKEND_URL}/awards?id=${id}&postOrComment=${postOrComment}`
         );

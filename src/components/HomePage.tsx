@@ -120,7 +120,7 @@ export default function App() {
                 value={url}
                 onSearchClick={onSearchClick}
                 handleChange={handleChange}
-                isSearching={state.isLoading}
+                isSearching={state.isLoadingSearch}
                 placeholder={postOrComment}
               />
             </Grid>
@@ -146,7 +146,7 @@ export default function App() {
 
           <SearchError error={state.error} />
 
-          {displayingLeaderBoard && state.data ? (
+          {displayingLeaderBoard && state.data && (
             <LeaderBoard
               posts={state.data.posts}
               currentPage={state.data.page}
@@ -154,7 +154,8 @@ export default function App() {
               handlePageChange={handlePageChange}
               displayingLeaderBoard={displayingLeaderBoard}
             />
-          ) : (
+          )}
+          {state.isLoadingLeaderBoard && (
             <div className={classes.loadingIndicator}>
               <CircularProgress color="secondary" />
             </div>
