@@ -3,12 +3,7 @@
 @tailwind utilities;
 
 html {
-  font-weight: Garnett, sans-serif;
-}
-
-
-html {
-  font-size: 16px;
+  background-color: #FCEEDF;
 }
 
 /* 

@@ -152,6 +152,7 @@ export default function App() {
               currentPage={state.data.page}
               pageCount={state.data.totalPages}
               handlePageChange={handlePageChange}
+              isLoading={state.isLoadingLeaderBoard}
             />
           )}
           {state.isLoadingLeaderBoard && (

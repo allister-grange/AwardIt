@@ -16,8 +16,6 @@ export default function App() {
 
   const onSearchClick = () => {
     if (url === "") return;
-    console.log(url);
-
     searchAwardsForId(url, postOrComment);
   };
 
@@ -29,7 +27,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg-primary-bg h-100">
+    <div className="bg-primary-bg min-h-full flex flex-col">
       <div className="w-full text-center pt-16">
         <h1 className="text-6xl font-bold ">AwardIt 🏆</h1>
       </div>
@@ -47,14 +45,15 @@ export default function App() {
         postOrComment={postOrComment}
       />
 
-      {state.data && (
-        <LeaderBoard
-          posts={state.data.posts}
-          currentPage={state.data.page}
-          pageCount={state.data.totalPages}
-          handlePageChange={handlePageChange}
-        />
-      )}
+      {state.error && <p>{state.error}</p>}
+
+      <LeaderBoard
+        posts={state.data?.posts}
+        currentPage={state.data?.page}
+        pageCount={state.data?.totalPages}
+        handlePageChange={handlePageChange}
+        isLoading={state.isLoadingLeaderBoard}
+      />
 
       <Footer />
     </div>

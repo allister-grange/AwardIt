@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <div className="text-gray-500 w-full text-center pb-8">
+    <div className={`text-gray-500 w-full text-center pb-8`}>
       <p>
         Using estimates from the cheapest and most expensive bundles found on{" "}
         <a
