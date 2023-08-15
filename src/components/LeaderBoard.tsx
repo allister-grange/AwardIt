@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RedditPost } from "../types";
-import { IconGrid } from "./IconGrid";
 import Pagination from "@material-ui/lab/Pagination";
+import { IconGrid } from "./IconGrid";
 
 interface LeaderBoardProps {
   posts: RedditPost[];
@@ -50,7 +50,9 @@ export const LeaderBoard: React.FC<LeaderBoardProps> = ({
               )}
             </div>
             <div
-              className={`bg-primary-bg_secondary rounded-xl p-4 flex grow ${
+              className={`${
+                post.isHighlighted ? "bg-blue-100" : "bg-primary-bg_secondary"
+              } rounded-xl p-4 flex grow ${
                 post.leaderBoardPosition! === leaderBoardPosShowingAllAwards
                   ? undefined
                   : "h-40"

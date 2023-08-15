@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Coin } from "../types";
 
 interface IconGridProps {
@@ -16,8 +16,6 @@ export const IconGrid: React.FC<IconGridProps> = ({
   setLeaderBoardPosShowingAllAwards,
   position,
 }) => {
-  // const [showingAllAwards, setShowingAllAwards] = useState(false);
-
   return (
     <div className="bg-transparent max-w-lg flex flex-row flex-wrap justify-center ml-auto p-2 borer-2xl items-center">
       {coins.map((coin, idx) => {

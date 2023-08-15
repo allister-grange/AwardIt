@@ -3,6 +3,7 @@ import SearchBar from "./components/SearchBar";
 import useRedditPostData from "./hooks/useRedditPostData";
 import { LeaderBoard } from "./components/LeaderBoard";
 import Footer from "./components/Footer";
+import { CommentOrPostToggle } from "./components/CommentOrPostToggle";
 
 export default function App() {
   const [postOrComment, setPostOrComment] = useState("post");
@@ -41,20 +42,10 @@ export default function App() {
         placeholder={postOrComment}
       />
 
-      {/* TOGGLE BUTTONS */}
-      <div className="w-100 text-center pt-5 flex flex-row justify-center gap-12">
-        {/* POST / COMMENT */}
-        <div>
-          <button className="w-100 border border-black rounded-3xl h-8">
-            <span className="bg-black text-white rounded-3xl py-2 px-4">
-              Post
-            </span>
-            <span className="py-2 pr-4 pl-2">Comment</span>
-          </button>
-        </div>
-      </div>
-
-      {/* LEADERBOARD */}
+      <CommentOrPostToggle
+        setPostOrComment={setPostOrComment}
+        postOrComment={postOrComment}
+      />
 
       {state.data && (
         <LeaderBoard
