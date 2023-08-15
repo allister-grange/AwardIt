@@ -7,7 +7,11 @@ import { RedditApiResponse } from "./types/redditApiResponse";
 const he = require("he");
 require("dotenv").config();
 
-const ALLOWED_ORIGINS = ["https://awardit.info", "https://www.awardit.info"];
+const ALLOWED_ORIGINS = [
+  "https://awardit.info",
+  "https://www.awardit.info",
+  "http://localhost:3000",
+];
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
 
 const corsOptions = {

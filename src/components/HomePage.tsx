@@ -90,78 +90,79 @@ export default function App() {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Grid
-        container
-        style={{ height: "100%" }}
-        direction="column"
-        alignItems="center"
-        justify="center"
-      >
-        <Grid
-          item
-          xs={12}
-          style={
-            displayingLeaderBoard
-              ? { marginTop: "20px" }
-              : { marginTop: "calc(30vh - 200px)" }
-          }
-        >
-          <Header />
-        </Grid>
-        <div
-          className={
-            displayingLeaderBoard ? classes.raisedSearchBar : classes.searchBar
-          }
-        >
-          <Grid container justify="center" alignItems="center">
-            <Grid item xs={12}>
-              <SearchBar
-                value={url}
-                onSearchClick={onSearchClick}
-                handleChange={handleChange}
-                isSearching={state.isLoadingSearch}
-                placeholder={postOrComment}
-              />
-            </Grid>
+    <div></div>
+    // <Container maxWidth="xl">
+    //   <Grid
+    //     container
+    //     style={{ height: "100%" }}
+    //     direction="column"
+    //     alignItems="center"
+    //     justify="center"
+    //   >
+    //     <Grid
+    //       item
+    //       xs={12}
+    //       style={
+    //         displayingLeaderBoard
+    //           ? { marginTop: "20px" }
+    //           : { marginTop: "calc(30vh - 200px)" }
+    //       }
+    //     >
+    //       <Header />
+    //     </Grid>
+    //     <div
+    //       className={
+    //         displayingLeaderBoard ? classes.raisedSearchBar : classes.searchBar
+    //       }
+    //     >
+    //       <Grid container justify="center" alignItems="center">
+    //         <Grid item xs={12}>
+    //           <SearchBar
+    //             value={url}
+    //             onSearchClick={onSearchClick}
+    //             handleChange={handleChange}
+    //             isSearching={state.isLoadingSearch}
+    //             placeholder={postOrComment}
+    //           />
+    //         </Grid>
 
-            <DisplaySwitches
-              toggleChecked={toggleChecked}
-              displayingCoins={displayingCoins}
-              setDisplayingCoins={setDisplayingCoins}
-              displayingLeaderBoard={displayingLeaderBoard}
-              setDisplayingLeaderBoard={setDisplayingLeaderBoard}
-            />
-          </Grid>
-        </div>
+    //         <DisplaySwitches
+    //           toggleChecked={toggleChecked}
+    //           displayingCoins={displayingCoins}
+    //           setDisplayingCoins={setDisplayingCoins}
+    //           displayingLeaderBoard={displayingLeaderBoard}
+    //           setDisplayingLeaderBoard={setDisplayingLeaderBoard}
+    //         />
+    //       </Grid>
+    //     </div>
 
-        <div className={classes.awardsGrid}>
-          {displayingCoins && state.hasSearched ? (
-            <AwardsDisplay
-              data={state.data?.posts[0]}
-              displayingLeaderBoard={displayingLeaderBoard}
-              setDisplayingCoins={setDisplayingCoins}
-            />
-          ) : null}
+    //     <div className={classes.awardsGrid}>
+    //       {displayingCoins && state.hasSearched ? (
+    //         <AwardsDisplay
+    //           data={state.data?.posts[0]}
+    //           displayingLeaderBoard={displayingLeaderBoard}
+    //           setDisplayingCoins={setDisplayingCoins}
+    //         />
+    //       ) : null}
 
-          <SearchError error={state.error} />
+    //       <SearchError error={state.error} />
 
-          {displayingLeaderBoard && state.data && (
-            <LeaderBoard
-              posts={state.data.posts}
-              currentPage={state.data.page}
-              pageCount={state.data.totalPages}
-              handlePageChange={handlePageChange}
-              displayingLeaderBoard={displayingLeaderBoard}
-            />
-          )}
-          {state.isLoadingLeaderBoard && (
-            <div className={classes.loadingIndicator}>
-              <CircularProgress color="secondary" />
-            </div>
-          )}
-        </div>
-      </Grid>
-    </Container>
+    //       {displayingLeaderBoard && state.data && (
+    //         <LeaderBoard
+    //           posts={state.data.posts}
+    //           currentPage={state.data.page}
+    //           pageCount={state.data.totalPages}
+    //           handlePageChange={handlePageChange}
+    //           displayingLeaderBoard={displayingLeaderBoard}
+    //         />
+    //       )}
+    //       {state.isLoadingLeaderBoard && (
+    //         <div className={classes.loadingIndicator}>
+    //           <CircularProgress color="secondary" />
+    //         </div>
+    //       )}
+    //     </div>
+    //   </Grid>
+    // </Container>
   );
 }
