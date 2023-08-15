@@ -1,89 +1,34 @@
 import React from "react";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-
-import FormControl from "@material-ui/core/FormControl";
-import Search from "@material-ui/icons/Search";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  textField: {
-    width: "25ch",
-  },
-}));
-
-const useOutlinedInputStyles = makeStyles((theme) => ({
-  root: {
-    "& $notchedOutline": {
-      borderColor: "grey",
-    },
-    "&:hover $notchedOutline": {
-      borderColor: "coral",
-    },
-    "&$focused $notchedOutline": {
-      borderColor: "coral",
-    },
-  },
-  focused: {},
-  notchedOutline: {},
-}));
-
 export default function SearchBar(props: any) {
-  const classes = useStyles();
-  const outlinedInputClasses = useOutlinedInputStyles();
-
   return (
-    <div className={classes.root}>
-      <FormControl
-        style={{ width: "83%" }}
-        className={clsx(classes.margin, classes.textField)}
-        variant="outlined"
-      >
-        <InputLabel htmlFor="outlined-adornment">
-          {props.placeholder} url
-        </InputLabel>
-        <OutlinedInput
-          fullWidth={true}
-          label={`${props.placeholder} url`}
-          id="outlined-adornment"
-          classes={outlinedInputClasses}
-          value={props.value}
-          onChange={props.handleChange()}
-          onKeyPress={(ev) => {
-            if (ev.key === "Enter") {
-              props.onSearchClick();
-            }
-          }}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                type="submit"
-                aria-label="search"
-                onClick={props.onSearchClick}
-              >
-                {props.isSearching ? (
-                  <CircularProgress style={{ color: "coral" }} size={28} />
-                ) : (
-                  <Search style={{ color: "coral" }} />
-                )}
-              </IconButton>
-            </InputAdornment>
+    <div className="text-center pt-4 relative mx-auto w-min">
+      <input
+        onKeyPress={(ev) => {
+          if (ev.key === "Enter") {
+            props.onSearchClick();
           }
-          labelWidth={55}
-        />
-      </FormControl>
+        }}
+        onChange={(e) => props.handleChange(e)}
+        value={props.value}
+        className="rounded-3xl w-[420px] border-black border h-10 px-4 bg-transparent"
+        placeholder="https://www.reddit.com/r/funny/234dfws"
+      ></input>
+      <button
+        type="submit"
+        onClick={props.onSearchClick}
+        className="absolute right-0 text-white bg-black rounded-3xl h-10 px-4 w-20"
+      >
+        {props.isSearching ? (
+          <CircularProgress
+            style={{ color: "white", marginTop: "6px" }}
+            size={14}
+          />
+        ) : (
+          "Search"
+        )}
+      </button>
     </div>
   );
 }

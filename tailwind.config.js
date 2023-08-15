@@ -6,14 +6,8 @@ module.exports = {
       colors: {
         primary: {
           bg: "#FCEFDF",
-          200: "#B3E0FF",
-          300: "#80C9FF",
-          // ... other shades
-        },
-        secondary: {
-          100: "#FFEFD9",
-          200: "#FFD099",
-          300: "#FFB359",
+          bg_secondary: "#FEF8EF",
+          bg_tertiary: "#FDFCF7",
           // ... other shades
         },
       },

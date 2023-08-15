@@ -58,7 +58,7 @@ app.get("/posts", async (req: Request, res: Response) => {
 
     // Fetch the data from the "reddit_awards" table
     const result = await pool.query(
-      "SELECT * FROM reddit_posts ORDER BY totalCost DESC OFFSET $1 LIMIT $2",
+      "SELECT *, ROW_NUMBER() OVER (ORDER BY totalCost DESC) AS leaderBoardPosition FROM reddit_posts OFFSET $1 LIMIT $2",
       [offset, ITEMS_PER_PAGE]
     );
 

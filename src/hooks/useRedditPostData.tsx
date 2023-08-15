@@ -104,6 +104,7 @@ const useApiCall = () => {
         const formattedData = data.posts.map((post: any) => ({
           ...post,
           subReddit: post.subreddit,
+          leaderBoardPosition: post.leaderboardposition,
           totalCost: parseInt(post.totalcost),
         }));
 
