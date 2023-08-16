@@ -1,33 +1,38 @@
 import React from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { SearchSpinner } from "./SearchSpinner";
 
-export default function SearchBar(props: any) {
+interface SearchBarProps {
+  onSearchClick: () => void;
+  handleChange: (event: any) => void;
+  value: string;
+  isSearching: boolean;
+}
+
+export default function SearchBar({
+  onSearchClick,
+  handleChange,
+  value,
+  isSearching,
+}: SearchBarProps) {
   return (
     <div className="text-center pt-4 relative mx-auto w-min">
       <input
         onKeyPress={(ev) => {
           if (ev.key === "Enter") {
-            props.onSearchClick();
+            onSearchClick();
           }
         }}
-        onChange={(e) => props.handleChange(e)}
-        value={props.value}
-        className="rounded-3xl w-[420px] border-black border h-10 px-4 bg-transparent"
+        onChange={(e) => handleChange(e)}
+        value={value}
+        className="rounded-3xl w-[420px] border-black  h-10 px-4 bg-transparent focus:border-orange-600 border-2 border-solid focus:outline-none"
         placeholder="https://www.reddit.com/r/funny/234dfws"
       ></input>
       <button
         type="submit"
-        onClick={props.onSearchClick}
+        onClick={onSearchClick}
         className="absolute right-0 text-white bg-black rounded-3xl h-10 px-4 w-20"
       >
-        {props.isSearching ? (
-          <CircularProgress
-            style={{ color: "white", marginTop: "6px" }}
-            size={14}
-          />
-        ) : (
-          "Search"
-        )}
+        {isSearching ? <SearchSpinner /> : "Search"}
       </button>
     </div>
   );

@@ -2,9 +2,9 @@ import React from "react";
 
 interface SpinnerProps {}
 
-export const Spinner: React.FC<SpinnerProps> = ({}) => {
+export const LeaderBoardSpinner: React.FC<SpinnerProps> = ({}) => {
   return (
-    <div className="text-center mx-auto">
+    <div className="text-center mx-auto py-10">
       <svg
         aria-hidden="true"
         className="inline w-8 h-8  text-gray-200 animate-spin dark:text-gray-600 fill-orange-600"

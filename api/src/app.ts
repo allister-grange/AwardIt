@@ -93,8 +93,6 @@ app.get("/posts", async (req: Request, res: Response) => {
       posts,
     };
 
-    // await new Promise((resolve) => setTimeout(resolve, 100000000));
-
     res.status(200).json(response);
   } catch (err) {
     console.error("Error fetching data:", err.message);

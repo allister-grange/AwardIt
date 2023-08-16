@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useCallback } from "react";
 import { GetPostsApiResponse } from "../types";
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "https://backend.awardit.info";
 
 type State = {
   data?: GetPostsApiResponse;
@@ -97,7 +97,7 @@ const useApiCall = () => {
       try {
         const response = await fetch(`${BACKEND_URL}/posts?page=${pageNumber}`);
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("🤕 there's something wrong");
         }
         const data = (await response.json()) as GetPostsApiResponse;
 
@@ -112,7 +112,12 @@ const useApiCall = () => {
 
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {
-        dispatch({ type: "FETCH_FAILURE", payload: error as string });
+        console.error(error);
+        const errorMessage = error as any;
+        dispatch({
+          type: "FETCH_FAILURE",
+          payload: errorMessage.message as string,
+        });
       }
     },
     [BACKEND_URL]
@@ -137,12 +142,12 @@ const useApiCall = () => {
           `${BACKEND_URL}/awards?id=${id}&postOrComment=${postOrComment}`
         );
         if (!getAwardsForIdsRes.ok) {
-          throw new Error("GetAwardsForIdsRes failed");
+          throw new Error("🤕 something went wrong");
         }
         const awardData = await getAwardsForIdsRes.json();
 
         if (!getAwardsForIdsRes.ok) {
-          throw new Error("Failed to pull down awards for record");
+          throw new Error("🤕 something went wrong");
         }
 
         // early break out if the post has no awards
@@ -160,7 +165,7 @@ const useApiCall = () => {
         });
 
         if (!pushingDataIntoDbRes.ok) {
-          throw new Error("Failed to create the reddit post record");
+          throw new Error("🤕 something went wrong");
         }
 
         const createdPostData = await pushingDataIntoDbRes.json();
@@ -170,7 +175,7 @@ const useApiCall = () => {
           `${BACKEND_URL}/postsByTotalCost?totalCost=${createdPostData.totalcost}`
         );
         if (!response.ok) {
-          throw new Error("Pulling down leader board by total cost failed");
+          throw new Error("🤕 something went wrong");
         }
         const data = (await response.json()) as GetPostsApiResponse;
 
@@ -188,6 +193,7 @@ const useApiCall = () => {
         dispatch({ type: "SET_SEARCHED" });
         return data;
       } catch (error) {
+        console.error(error);
         const errorMessage = error as any;
         dispatch({
           type: "FETCH_FAILURE",

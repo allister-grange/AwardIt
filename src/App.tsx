@@ -4,6 +4,8 @@ import useRedditPostData from "./hooks/useRedditPostData";
 import { LeaderBoard } from "./components/LeaderBoard";
 import Footer from "./components/Footer";
 import { CommentOrPostToggle } from "./components/CommentOrPostToggle";
+import SearchError from "./components/SearchError";
+import { LeaderBoardSpinner } from "./components/LeaderBoardSpinner";
 
 export default function App() {
   const [postOrComment, setPostOrComment] = useState("post");
@@ -37,7 +39,6 @@ export default function App() {
         onSearchClick={onSearchClick}
         handleChange={handleChange}
         isSearching={state.isLoadingSearch}
-        placeholder={postOrComment}
       />
 
       <CommentOrPostToggle
@@ -45,15 +46,18 @@ export default function App() {
         postOrComment={postOrComment}
       />
 
-      {state.error && <p>{state.error}</p>}
+      {state.error && <SearchError error={state.error} />}
 
-      <LeaderBoard
-        posts={state.data?.posts}
-        currentPage={state.data?.page}
-        pageCount={state.data?.totalPages}
-        handlePageChange={handlePageChange}
-        isLoading={state.isLoadingLeaderBoard}
-      />
+      {state.isLoadingLeaderBoard && <LeaderBoardSpinner />}
+
+      {state.data && (
+        <LeaderBoard
+          posts={state.data?.posts}
+          currentPage={state.data?.page}
+          pageCount={state.data?.totalPages}
+          handlePageChange={handlePageChange}
+        />
+      )}
 
       <Footer />
     </div>

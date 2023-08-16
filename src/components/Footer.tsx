@@ -13,6 +13,15 @@ export default function Footer() {
         </a>
       </p>
       <p>
+        View the code on{" "}
+        <a
+          href="https://github.com/allister-grange/AwardIt"
+          className="underline text-orange-600"
+        >
+          GitHub
+        </a>
+      </p>
+      <p>
         Made by{" "}
         <a
           href="https://allistergrange.com"
@@ -20,13 +29,7 @@ export default function Footer() {
         >
           Allister
         </a>
-        , a 🥝 see the code{" "}
-        <a
-          href="https://github.com/allister-grange/AwardIt"
-          className="underline text-orange-600"
-        >
-          here
-        </a>
+        , a 🥝
       </p>
     </div>
   );
