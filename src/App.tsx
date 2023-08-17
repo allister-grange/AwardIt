@@ -44,6 +44,7 @@ export default function App() {
       <CommentOrPostToggle
         setPostOrComment={setPostOrComment}
         postOrComment={postOrComment}
+        isLoadingLeaderBoard={state.isLoadingLeaderBoard}
       />
 
       {state.error && <SearchError error={state.error} />}

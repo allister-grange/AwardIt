@@ -3,22 +3,25 @@ import React, { useEffect } from "react";
 interface CommentOrPostToggleProps {
   setPostOrComment: React.Dispatch<React.SetStateAction<string>>;
   postOrComment: string;
+  isLoadingLeaderBoard: boolean;
 }
 
 export const CommentOrPostToggle: React.FC<CommentOrPostToggleProps> = ({
   postOrComment,
   setPostOrComment,
+  isLoadingLeaderBoard,
 }) => {
   const [postOrCommentPillPosition, setNavPillPosition] = React.useState({
     left: 0,
     width: 0,
     animate: false,
   });
-  const previousPillPosition = React.useRef<number | undefined>();
+  // const previousPillPosition = React.useRef<number | undefined>();
   const postOrCommentRef = React.useRef<HTMLDivElement>(null);
   const postRef = React.useRef<HTMLDivElement>(null);
+  const commentRef = React.useRef<HTMLDivElement>(null);
 
-  // set the original position for the pill
+  // set the original position for the pill, need to account for the scrollbar popping when the leaderboard comes in
   useEffect(() => {
     const boundingRect = postRef.current!.getBoundingClientRect();
 
@@ -26,7 +29,7 @@ export const CommentOrPostToggle: React.FC<CommentOrPostToggleProps> = ({
     const width = boundingRect.width;
 
     setNavPillPosition({ left: offsetX, width, animate: false });
-  }, []);
+  }, [isLoadingLeaderBoard]);
 
   const onLinkMouseEnter = (
     e: React.MouseEvent<HTMLSpanElement, MouseEvent>
@@ -38,10 +41,10 @@ export const CommentOrPostToggle: React.FC<CommentOrPostToggleProps> = ({
     const offsetX = linkRect.left - boundingRect.left;
     const width = linkRect.width;
 
-    if (previousPillPosition.current !== offsetX) {
-      setPostOrComment(postOrComment === "post" ? "comment" : "post");
-      previousPillPosition.current = offsetX;
-    }
+    const target = e.target as HTMLElement;
+    const textContent = target.textContent;
+
+    setPostOrComment(textContent === "Post" ? "post" : "comment");
 
     setNavPillPosition({ left: offsetX, width, animate: true });
   };
@@ -66,6 +69,7 @@ export const CommentOrPostToggle: React.FC<CommentOrPostToggleProps> = ({
           className={` pr-4 pl-4 relative transition-all
           ${!isPost ? "text-white" : ""} z-50`}
           onMouseOver={(e) => onLinkMouseEnter(e)}
+          ref={commentRef}
         >
           Comment
         </span>
