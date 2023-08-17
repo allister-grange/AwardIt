@@ -1,18 +1,20 @@
 import { useEffect, useReducer, useCallback } from "react";
 import { GetPostsApiResponse } from "../types";
 
-const BACKEND_URL = "https://backend.awardit.com";
+const BACKEND_URL = "http://localhost:3001";
 
 type State = {
   data?: GetPostsApiResponse;
   page: number;
-  isLoading: boolean;
+  isLoadingLeaderBoard: boolean;
+  isLoadingSearch: boolean;
   error?: string;
   hasSearched: boolean;
 };
 
 type Action =
-  | { type: "FETCH_INIT" }
+  | { type: "FETCH_INIT_LEADERBOARD" }
+  | { type: "FETCH_INIT_SEARCH" }
   | { type: "SET_SEARCHED" }
   | { type: "FETCH_SUCCESS"; payload: any }
   | { type: "FETCH_FAILURE"; payload: string }
@@ -20,26 +22,29 @@ type Action =
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "FETCH_INIT":
-      return { ...state, isLoading: true, error: undefined };
+    case "FETCH_INIT_LEADERBOARD":
+      return { ...state, isLoadingLeaderBoard: true, error: undefined };
+    case "FETCH_INIT_SEARCH":
+      return { ...state, isLoadingSearch: true, error: undefined };
     case "SET_SEARCHED":
       return { ...state, hasSearched: true };
     case "FETCH_SUCCESS":
       return {
         ...state,
-        isLoading: false,
+        isLoadingLeaderBoard: false,
+        isLoadingSearch: false,
         data: action.payload,
         error: undefined,
       };
     case "FETCH_PAGE":
       return {
         ...state,
-        isLoading: false,
+        isLoadingLeaderBoard: false,
         error: undefined,
         page: action.payload,
       };
     case "FETCH_FAILURE":
-      return { ...state, isLoading: false, error: action.payload };
+      return { ...state, isLoadingLeaderBoard: false, error: action.payload };
     default:
       return state;
   }
@@ -75,7 +80,8 @@ const parseRedditIdFromUrl = (url: string, postOrComment: string) => {
 const useApiCall = () => {
   const [state, dispatch] = useReducer(reducer, {
     data: undefined,
-    isLoading: false,
+    isLoadingLeaderBoard: false,
+    isLoadingSearch: false,
     error: undefined,
     page: 1,
     hasSearched: false,
@@ -87,17 +93,18 @@ const useApiCall = () => {
 
   const fetchPosts = useCallback(
     async (pageNumber: number) => {
-      dispatch({ type: "FETCH_INIT" });
+      dispatch({ type: "FETCH_INIT_LEADERBOARD" });
       try {
         const response = await fetch(`${BACKEND_URL}/posts?page=${pageNumber}`);
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("🤕 there's something wrong");
         }
         const data = (await response.json()) as GetPostsApiResponse;
 
         const formattedData = data.posts.map((post: any) => ({
           ...post,
           subReddit: post.subreddit,
+          leaderBoardPosition: post.leaderboardposition,
           totalCost: parseInt(post.totalcost),
         }));
 
@@ -105,7 +112,12 @@ const useApiCall = () => {
 
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {
-        dispatch({ type: "FETCH_FAILURE", payload: error as string });
+        console.error(error);
+        const errorMessage = error as any;
+        dispatch({
+          type: "FETCH_FAILURE",
+          payload: errorMessage.message as string,
+        });
       }
     },
     [BACKEND_URL]
@@ -125,17 +137,17 @@ const useApiCall = () => {
       }
 
       try {
-        dispatch({ type: "FETCH_INIT" });
+        dispatch({ type: "FETCH_INIT_SEARCH" });
         const getAwardsForIdsRes = await fetch(
           `${BACKEND_URL}/awards?id=${id}&postOrComment=${postOrComment}`
         );
         if (!getAwardsForIdsRes.ok) {
-          throw new Error("GetAwardsForIdsRes failed");
+          throw new Error("🤕 something went wrong");
         }
         const awardData = await getAwardsForIdsRes.json();
 
         if (!getAwardsForIdsRes.ok) {
-          throw new Error("Failed to pull down awards for record");
+          throw new Error("🤕 something went wrong");
         }
 
         // early break out if the post has no awards
@@ -153,7 +165,7 @@ const useApiCall = () => {
         });
 
         if (!pushingDataIntoDbRes.ok) {
-          throw new Error("Failed to create the reddit post record");
+          throw new Error("🤕 something went wrong");
         }
 
         const createdPostData = await pushingDataIntoDbRes.json();
@@ -163,7 +175,7 @@ const useApiCall = () => {
           `${BACKEND_URL}/postsByTotalCost?totalCost=${createdPostData.totalcost}`
         );
         if (!response.ok) {
-          throw new Error("Pulling down leader board by total cost failed");
+          throw new Error("🤕 something went wrong");
         }
         const data = (await response.json()) as GetPostsApiResponse;
 
@@ -181,6 +193,7 @@ const useApiCall = () => {
         dispatch({ type: "SET_SEARCHED" });
         return data;
       } catch (error) {
+        console.error(error);
         const errorMessage = error as any;
         dispatch({
           type: "FETCH_FAILURE",

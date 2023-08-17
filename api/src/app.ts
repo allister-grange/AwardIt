@@ -7,7 +7,11 @@ import { RedditApiResponse } from "./types/redditApiResponse";
 const he = require("he");
 require("dotenv").config();
 
-const ALLOWED_ORIGINS = ["https://awardit.info", "https://www.awardit.info"];
+const ALLOWED_ORIGINS = [
+  "https://awardit.info",
+  "https://www.awardit.info",
+  "http://localhost:3000",
+];
 const ITEMS_PER_PAGE = 10; // Adjust the number of items per page as needed
 
 const corsOptions = {
@@ -54,7 +58,7 @@ app.get("/posts", async (req: Request, res: Response) => {
 
     // Fetch the data from the "reddit_awards" table
     const result = await pool.query(
-      "SELECT * FROM reddit_posts ORDER BY totalCost DESC OFFSET $1 LIMIT $2",
+      "SELECT *, ROW_NUMBER() OVER (ORDER BY totalCost DESC) AS leaderBoardPosition FROM reddit_posts OFFSET $1 LIMIT $2",
       [offset, ITEMS_PER_PAGE]
     );
 
