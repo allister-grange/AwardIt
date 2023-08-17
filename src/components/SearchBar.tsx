@@ -24,7 +24,7 @@ export default function SearchBar({
         }}
         onChange={(e) => handleChange(e)}
         value={value}
-        className="rounded-3xl w-[420px] border-black  h-10 px-4 bg-transparent focus:border-orange-600 border-2 border-solid focus:outline-none"
+        className="rounded-3xl w-80 sm:w-[420px] border-black  h-10 px-4 bg-transparent focus:border-orange-600 border-2 border-solid focus:outline-none"
         placeholder="https://www.reddit.com/r/funny/234dfws"
       ></input>
       <button

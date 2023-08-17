@@ -20,7 +20,7 @@ export const LeaderBoard: React.FC<LeaderBoardProps> = ({
     useState(-1);
 
   return (
-    <div className="max-w-4xl mx-auto pt-8 pb-16">
+    <div className="max-w-4xl mx-auto pt-8 pb-16 text-center sm:max-w-[90%]">
       {posts.map((post) => {
         const isTop3 =
           post.leaderBoardPosition == 1 ||
@@ -37,11 +37,15 @@ export const LeaderBoard: React.FC<LeaderBoardProps> = ({
         }
 
         return (
-          <div className="flex items-center mt-8 ">
-            <div className="bg-black font-bold bg-opacity-5 rounded-xl mr-4 flex justify-center items-center text-3xl w-24 h-24">
+          <div className="flex items-center mt-8 relative justify-center">
+            <div
+              className="absolute top-2 left-5 sm:static sm:flex 
+              sm:bg-black font-bold sm:bg-opacity-5 rounded-xl mr-4 
+              justify-center items-center text-lg md:text-3xl sm:w-24 sm:h-24"
+            >
               {isTop3 ? (
                 <div
-                  className={`rounded-full ${bgColor} h-12 w-12 text-primary-bg flex justify-center items-center`}
+                  className={`rounded-full ${bgColor} h-5 w-5 sm:h-12 sm:w-12 text-primary-bg flex justify-center items-center`}
                 >
                   {post.leaderBoardPosition}
                 </div>
@@ -50,15 +54,16 @@ export const LeaderBoard: React.FC<LeaderBoardProps> = ({
               )}
             </div>
             <div
-              className={`${
+              className={`flex flex-col text-center sm:flex-row max-w-xs sm:max-w-3xl
+              ${
                 post.isHighlighted ? "bg-blue-100" : "bg-primary-bg_secondary"
               } rounded-xl p-4 flex grow ${
                 post.leaderBoardPosition! === leaderBoardPosShowingAllAwards
                   ? undefined
-                  : "h-40"
+                  : "md:h-46"
               }`}
             >
-              <div className="bg-transparent min-w-max mr-12 max-h-32 flex flex-col justify-between p-2 ">
+              <div className="bg-transparent min-w-max sm:mr-12 sm:max-h-32 flex flex-col justify-between p-2">
                 <div>
                   <span className="text-gray-500 bold font-bold">TITLE: </span>
                   <a href={post.permalink} className="underline">

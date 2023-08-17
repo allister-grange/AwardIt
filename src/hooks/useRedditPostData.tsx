@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useCallback } from "react";
 import { GetPostsApiResponse } from "../types";
 
-const BACKEND_URL = "https://backend.awardit.info";
+const BACKEND_URL = "http://localhost:3001";
 
 type State = {
   data?: GetPostsApiResponse;
