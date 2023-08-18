@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useCallback } from "react";
-import { GetPostsApiResponse } from "../types";
+import { Coin, GetPostsApiResponse } from "../types";
 
-const BACKEND_URL = "http://localhost:3001";
+const BACKEND_URL = "https://backend.awardit.info";
 
 type State = {
   data?: GetPostsApiResponse;
@@ -106,6 +106,9 @@ const useApiCall = () => {
           subReddit: post.subreddit,
           leaderBoardPosition: post.leaderboardposition,
           totalCost: parseInt(post.totalcost),
+          coins: post.coins.sort((a: Coin, b: Coin) => {
+            return b.coin_price * b.count - a.coin_price * a.count;
+          }),
         }));
 
         data["posts"] = formattedData;
