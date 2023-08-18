@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 interface CommentOrPostToggleProps {
   setPostOrComment: React.Dispatch<React.SetStateAction<string>>;
@@ -16,20 +16,33 @@ export const CommentOrPostToggle: React.FC<CommentOrPostToggleProps> = ({
     width: 0,
     animate: false,
   });
-  // const previousPillPosition = React.useRef<number | undefined>();
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+
   const postOrCommentRef = React.useRef<HTMLDivElement>(null);
   const postRef = React.useRef<HTMLDivElement>(null);
   const commentRef = React.useRef<HTMLDivElement>(null);
 
+  const updateWindowWidth = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
   // set the original position for the pill, need to account for the scrollbar popping when the leaderboard comes in
-  useEffect(() => {
+  React.useEffect(() => {
     const boundingRect = postRef.current!.getBoundingClientRect();
 
     const offsetX = boundingRect.left;
     const width = boundingRect.width;
 
     setNavPillPosition({ left: offsetX, width, animate: false });
-  }, [isLoadingLeaderBoard]);
+  }, [isLoadingLeaderBoard, windowWidth]);
+
+  React.useEffect(() => {
+    window.addEventListener("resize", updateWindowWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
 
   const onLinkMouseEnter = (
     e: React.MouseEvent<HTMLSpanElement, MouseEvent>
