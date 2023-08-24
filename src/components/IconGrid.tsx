@@ -23,7 +23,7 @@ export const IconGrid: React.FC<IconGridProps> = ({
         if (idx < 30 || showingAllAwards) {
           return (
             <Tooltip
-              key={coin.name}
+              key={coin.name + idx}
               title={coin.coin_price * coin.count + " coins"}
               placement="top"
               aria-label="coin price"
@@ -41,7 +41,10 @@ export const IconGrid: React.FC<IconGridProps> = ({
           );
         } else if (idx === 30 && !showingAllAwards) {
           return (
-            <button onClick={() => setLeaderBoardPosShowingAllAwards(position)}>
+            <button
+              key={idx}
+              onClick={() => setLeaderBoardPosShowingAllAwards(position)}
+            >
               ...show all awards
             </button>
           );

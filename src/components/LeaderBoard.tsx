@@ -10,6 +10,17 @@ interface LeaderBoardProps {
   handlePageChange: any;
 }
 
+function getBackgroundColor(position: number) {
+  if (position == 1) {
+    return "bg-yellow-400";
+  } else if (position == 2) {
+    return "bg-gray-400";
+  } else if (position == 3) {
+    return "bg-yellow-800";
+  }
+  return "";
+}
+
 export const LeaderBoard: React.FC<LeaderBoardProps> = ({
   posts,
   currentPage,
@@ -23,21 +34,14 @@ export const LeaderBoard: React.FC<LeaderBoardProps> = ({
     <div className="max-w-4xl mx-auto pt-8 pb-16 text-center sm:max-w-[90%]">
       {posts.map((post) => {
         const isTop3 =
-          post.leaderBoardPosition == 1 ||
-          post.leaderBoardPosition == 2 ||
-          post.leaderBoardPosition == 3;
-
-        let bgColor = "";
-        if (post.leaderBoardPosition == 1) {
-          bgColor = "bg-yellow-400";
-        } else if (post.leaderBoardPosition == 2) {
-          bgColor = "bg-gray-400";
-        } else if (post.leaderBoardPosition == 3) {
-          bgColor = "bg-yellow-800";
-        }
+          post.leaderBoardPosition && post.leaderBoardPosition <= 3;
+        const bgColor = getBackgroundColor(post.leaderBoardPosition);
 
         return (
-          <div className="flex items-center mt-8 relative justify-center">
+          <div
+            className="flex items-center mt-8 relative justify-center"
+            key={post.id}
+          >
             <div
               className="absolute top-2 left-5 sm:static sm:flex 
               sm:bg-black font-bold sm:bg-opacity-5 rounded-xl mr-4 

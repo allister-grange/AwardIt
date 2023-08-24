@@ -23,7 +23,7 @@ export type RedditPost = {
   subReddit: string;
   title: string;
   isHighlighted?: boolean;
-  leaderBoardPosition?: number;
+  leaderBoardPosition: number;
 };
 
 export type GetPostsApiResponse = {
