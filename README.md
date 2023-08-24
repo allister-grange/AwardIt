@@ -2,7 +2,7 @@
 
 <p align="center">
     <kbd>
-        <img src="demo/awardit-demo.gif">
+        <img src="demo/demo.mov">
     </kbd>
 </p>
 
