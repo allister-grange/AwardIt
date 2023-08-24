@@ -1,10 +1,6 @@
 # [AwardIt](https://awardit.info)
 
-<p align="center">
-    <kbd>
-        <img src="demo/demo.mov">
-    </kbd>
-</p>
+https://github.com/allister-grange/AwardIt/assets/18430086/cac11787-538a-4063-bcf2-1dbe5e1bc1de
 
 ## Tech
 
