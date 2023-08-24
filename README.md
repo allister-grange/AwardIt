@@ -1,6 +1,6 @@
 # [AwardIt](https://awardit.info)
 
-https://github.com/allister-grange/AwardIt/assets/18430086/cac11787-538a-4063-bcf2-1dbe5e1bc1de
+https://github.com/allister-grange/AwardIt/assets/18430086/62efe670-e37e-47fc-b543-723c42e191b7
 
 ## Tech
 
