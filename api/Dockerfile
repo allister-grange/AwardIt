@@ -1,23 +1,21 @@
-FROM node:18-alpine AS build
-
+FROM node:18-alpine AS base
 WORKDIR /usr/src/app
-
 COPY package*.json ./
 
-RUN npm install
 
+FROM base AS dev
+RUN --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm install
 COPY . .
+CMD ["npm", "run", "dev"]
 
-
-FROM node:18-alpine
-
-WORKDIR /usr/src/app
-
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app .
-
+FROM base AS prod
+ENV NODE_ENV production
+RUN --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm ci --only=production
+USER node
+COPY --chown=node:node ./src/ .
 EXPOSE 3000
-
-ENV NODE_ENV=production
-
-CMD ["npm", "start"]
+CMD [ "ts-node", "src/app.ts" ]
