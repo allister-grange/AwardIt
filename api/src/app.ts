@@ -35,6 +35,7 @@ app.use(express.json());
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
   password: process.env.DB_PASS,
   database: "awardit",
 });
