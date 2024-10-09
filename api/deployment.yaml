@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: awardit-api
+  name: awardit-api-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: awardit-api
@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
         - name: awardit-api
-          image: awardit-api:dev
+          image: registry.digitalocean.com/grangeal-container-registry/awardit-api:prod
           ports:
             - containerPort: 3001
-
+      imagePullSecrets:
+        - name: regcred
 ---
 apiVersion: v1
 kind: Service
@@ -28,10 +29,8 @@ spec:
   selector:
     app: awardit-api
   ports:
-    - port: 3001
-      targetPort: 3001
-      nodePort: 32001
-
+    - protocol: TCP
+      port: 3001
 ---
 apiVersion: v1
 kind: Service
@@ -39,8 +38,10 @@ metadata:
   name: postgres-service
 spec:
   type: ExternalName
-  externalName: data.awardit.info # Replace with the host IP (e.g., 192.168.x.x)
+  externalName: data.awardit.info
   ports:
     - protocol: TCP
-      port: 2345 # The port your PostgreSQL instance is listening on
+      port: 2345
       targetPort: 2345
+---
+
